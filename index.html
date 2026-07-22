@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <title>الزرگ</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="description" content="الزرگ هو برنامج تعليمي تفاعلي للرسم القرءان الكريم">
+    <meta name="keywords" content="الزرك, الزرگ رسم, الطالب عـبدالله, تطبيق الرسم, الزرگ, الشيخ محمد خطار">
+    <meta property="og:image" content="images/og.png">
+    <meta name="theme-color" content="#A89122">
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-G3CG9LP902"></script>
+    <script> window.dataLayer = window.dataLayer || []; function gtag(){dataLayer.push(arguments);} gtag('js', new Date()); gtag('config', 'G-G3CG9LP902'); </script>
+    <script src="https://cdn.jsdelivr.net/npm/tesseract.js@4/dist/tesseract.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css" integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6886766107482726" crossorigin="anonymous"></script>
+    <link rel="icon" href="/images/logo.png" type="image/x-icon">
+    <link rel="stylesheet" href="style.css">
+    <link rel="manifest" href="manifest.json">
+</head>
+<body>
+    
+    <div id="inAppBrowserWarning" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #fdf5e6; color: #3a2c1f; z-index: 99999; text-align: center; padding: 30px; box-sizing: border-box; flex-direction: column; justify-content: center; align-items: center;">
+        <i class="fa-brands fa-safari" style="font-size: 5rem; color: #a7634b; margin-bottom: 20px;"></i>
+        <h2 style="margin-bottom: 15px; color: #a7634b;">افتح التطبيق في المتصفح!</h2>
+        <p style="font-size: 1.2rem; line-height: 1.6; margin-bottom: 25px; font-weight: bold;">        أنت تفتح "الزرگ" من داخل تطبيق (مثل فيسبوك). <br><br>                لضمان حفظ تقدمك وتفعيل ميزة الكناش، الرجاء الضغط على <strong>النقاط الثلاث</strong> <i class="fa-solid fa-ellipsis-vertical"></i> في الزاوية العلوية واختيار <br>        
+            <span style="color: #d4493c;">"فتح في المتصفح" (Open in Browser)</span> أو <span style="color: #d4493c;">(Open in Safari)</span>.
+        </p>
+        <div style="padding: 15px; background: #e9f5e6; border: 1px dashed #2b6e2f; border-radius: 10px; color: #2b6e2f; font-weight: bold;">
+            <i class="fa-solid fa-circle-info"></i> هذه الخطوة ضرورية لكي يعمل التطبيق بشكل صحيح.
+        </div>
+    </div>
+    
+    <div class="lewa7" id="lewa7">
+        <div class="lewa7-container" id="lewa7Container">
+            <h2 class="bismillah-text" id="bismillahText"></h2>                
+            <div class="ta7at" id="ta7at"></div>     
+            <span class="mithal" id="mithal"></span>
+            <button id="nextWordBtn" class="hamesh right"><i class="fa-solid fa-arrow-right"></i></button>            
+            <button id="previousWordBtn" class="hamesh left"><i class="fa-solid fa-arrow-left"></i></button>              
+            <span class="qid" id="qid"></span>			
+            <h1 class="elkalamah" id="elkalamah">...</h1>
+               
+            <div class="abiat" id="abiat"></div>
+            <img class="dmair" id="dmair" src="dmair/1.png">
+            <div class="btns">
+                <button class="pairO" id="pair1">...</button>
+                <button class="pairT" id="pair2">...</button>
+            </div>
+        </div>
+        <div class="lewa7-back">
+            <div class="back-overlay"></div>
+            <div class="message">مرحبا</div>
+        </div>
+    </div>
+    
+    <div style="display:none" class="qr-code">
+        <button id="hideQrCode"><i class="fa-solid fa-xmark"></i></button>
+        <img src="qr.png" alt="qr">
+    </div>
+    
+    <div class="marquee-bar">
+        <button id="toggleMenuDisplay" onclick="menu.classList.toggle('show-menu');console.log(87)"><i class="fa-solid fa-bars"></i></button>
+        <div class="marquee">
+            <div class="marquee-content">
+                <b>قال الشيخ الفاضل لامات ولد الطالب: يا طالبے رسم القرَان هاكم * هذا الذے  ابن شيخنا أهداكم   | وهو بسبق حائز    تفضيلا * مستوجب ثناءنا الجميلا</b>
+                <b>تم تحديث وإصلاح أخطاء الزرگ في هذه النسخة</b>
+            </div>
+        </div>
+    </div>
+    
+    <ul class="menu" id="menu">
+        <li id="showAuthModalBtn"><i class="fa-solid fa-user"></i> الحساب</li>
+        <li id="showColorModalBtn"><i class="fa-solid fa-palette"></i> تغير الون</li>
+        <li id="showSubscribersModalBtn"><i class="fa-solid fa-users"></i> قائمة المشتركين</li>
+        <li id="showChatAiModalBtn"><i class="fa-solid fa-robot"></i> حساني</li>
+        <li id="showOffersModalBtn"><i class="fa-solid fa-star"></i> باقات وعروض</li>
+        <li id="showKennachModal"><i class="fa-solid fa-note-sticky"></i> الكناش</li>
+        <li id="shareAppBtn"><i class="fa-solid fa-share"></i> شارك التطبيق</li>
+        <li id="openAboutModalBtn"><i class="fa-solid fa-circle-info"></i> عن المطور</li>
+        <li id="showProgressModalBtn"><i class="fa-solid fa-chart-line"></i> التقدم</li>
+        <li id="showSettingsModalBtn"><i class="fa-solid fa-gear"></i> الإعدادات</li>
+        <li id="shagarlyBtn"><i class="fa-solid fa-camera"></i> شگرلي</li>
+        
+        <input type="file" id="cameraInput" accept="image/*" capture="environment" style="display: none;">
+    </ul>
+    
+    <div class="overlay" id="loadOverlay">
+        <div class="load-progress"></div>
+        <div class="label">لسم الله..</div>
+    </div>
+
+    <div class="bsmla">لسم الله الرحمن الرحيم</div>
+
+    <div class="images" id="images" style="display:none">
+        <div class="image" id="image"></div>
+        <a href="#lewa7-body" class="btn">اللوح &uarr;</a>       
+    </div>     
+
+    <div id="authModalOverlay" class="modal-overlay-bg hidden"></div>
+    <div id="authModal" class="modal hidden">
+        <div class="modal-header">
+            <h3 id="authTitle">تسجيل الدخول</h3>
+            <button class="close-modal" id="closeAuthModalBtn"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <div class="modal-info" style="margin-top: 15px;">
+            <input type="text" id="authEmail" class="input-code" placeholder="اسم الطالب" style="font-family: Arial, sans-serif; text-align: right;">
+            <input type="password" id="authPassword" class="input-code" placeholder="كلمة المرور" style="font-family: Arial, sans-serif; text-align: right;">
+            
+            <button id="authActionBtn" class="verify-btn" style="background: #a7634b;">تسجيل الدخول</button>
+            <button id="logoutBtn" class="verify-btn hidden" style="background: #d4493c;">تسجيل الخروج</button>
+            
+            <div id="authMessage" class="success-msg hidden" style="margin-top: 10px;"></div>
+        </div>
+    </div>
+    
+    <div id="aboutModalOverlay" class="modal-overlay-bg hidden"></div>
+    <div id="aboutModal" class="modal hidden">
+        <div class="modal-header">
+            <h3>عن المطور</h3>
+            <button class="close-modal" id="closeAboutModalBtn"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+  
+        <div class="modal-info" style="margin-top: 15px; text-align: center;">
+            <div style="margin-bottom: 20px;">
+                <i class="fa-solid fa-code" style="font-size: 3rem; color: #a7634b; margin-bottom: 10px;"></i>
+                <h4 style="margin: 5px 0; color: #333;">الشيخ محمد ولد خطار</h4>
+                <p style="color: #666; font-size: 0.9rem;">مطور ويب</p>
+            </div>
+
+            <a href="https://wa.me/22249014788" target="_blank" class="verify-btn" style="background: #25D366; display: block; margin: 8px 0; text-decoration: none; color: white;">
+                <i class="fa-brands fa-whatsapp"></i> واتساب
+            </a>
+
+            <a href="https://instagram.com/oldkhatar" target="_blank" class="verify-btn" style="background: #E1306C; display: block; margin: 8px 0; text-decoration: none; color: white;">
+                <i class="fa-brands fa-instagram"></i> انستجرام
+            </a>
+
+            <a href="https://facebook.com/oldkhatar" target="_blank" class="verify-btn" style="background: #1877F2; display: block; margin: 8px 0; text-decoration: none; color: white;">
+                <i class="fa-brands fa-facebook"></i> فيسبوك
+            </a>
+
+            <a href="https://tiktok.com/@oldkhatar" target="_blank" class="verify-btn" style="background: #000; display: block; margin: 8px 0; text-decoration: none; color: white;">
+                <i class="fa-brands fa-tiktok"></i> تيك توك
+            </a>
+        </div>
+    </div>
+    <div id="shareToast" class="success-msg hidden" style="position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); z-index: 2000; padding: 10px 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);">
+    تم نسخ رابط التطبيق بنجاح!
+    </div>
+    <!-- نافذة تغيير الألوان (الميزة المدفوعة) -->
+    <div id="colorModalOverlay" class="modal-overlay-bg hidden"></div>
+        <div id="colorModal" class="modal hidden">
+            <div class="modal-header">
+                <h3>تغيير ألوان اللوح</h3>
+                <button class="close-modal" id="closeColorModalBtn"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="modal-info" style="margin-top: 15px;">
+            <div style="font-size: 1rem; color: #3a2c1f; margin-bottom: 15px;">
+            اختر لونك المفضل لتخصيص مظهر اللوح:
+            </div>
+        
+        <!-- خيارات الألوان -->
+            <div class="color-palette">
+                <div class="color-option" data-color="#549E91" style="background: #549E91;"></div>
+                <div class="color-option" data-color="#D4493C" style="background: #D4493C;"></div>
+                <div class="color-option" data-color="#004444" style="background: #004444;"></div>
+                <div class="color-option" data-color="#A89122" style="background: #A89122;"></div>
+                <div class="color-option" data-color="#333333" style="background: #333333;"></div>
+            </div>
+
+            <div class="premium-badge"><i class="fa-solid fa-crown"></i> ميزة الطالب المتميز</div>
+        
+            <div style="margin-top: 20px; border-top: 1px dashed #dbb42c; padding-top: 15px;">
+                <p style="font-size: 0.9rem; color: #555; margin-bottom: 10px;">هذه الميزة تتطلب كود تفعيل.</p>
+            
+            </div>
+            </div>
+        
+            <div id="premiumMessage" class="success-msg hidden" style="margin-top: 10px;"></div>
+    </div>
+    <div id="kunnashModalOverlay" class="modal-overlay-bg hidden"></div>
+        <div id="kunnashModal" class="modal hidden">
+            <div class="modal-header">
+            <h3>الكناش</h3>
+            <button class="close-modal" id="closeKunnashBtn"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <div class="modal-info" style="margin-top: 15px;">
+            <p style="font-size: 0.9rem; color: #555; margin-bottom: 10px; text-align: right;">
+                <i class="fa-solid fa-pen-to-square"></i> اكتب ملاحظاتك، الفوائد، أو الكلمات التي تستصعبها هنا:
+            </p>
+        
+            <textarea id="kunnashTextArea" rows="10" placeholder="اكتب ملاحظاتك هنا..." 
+                style="width: 100%; border-radius: 8px; border: 1px solid #dbb42c; padding: 12px; font-family: inherit; font-size: 1rem; resize: vertical; box-sizing: border-box; background: #fdf5e6; color: #3a2c1f; outline: none;">
+            </textarea>
+        
+            <button id="saveKunnashBtn" class="verify-btn" style="background: #a7634b; margin-top: 15px; display: flex; justify-content: center; gap: 8px;">
+            حفظ الملاحظات <i class="fa-solid fa-floppy-disk"></i>
+            </button>
+        
+            <div id="kunnashMessage" class="success-msg hidden" style="margin-top: 10px; text-align: center;"></div>
+        </div>
+    </div>
+    <div id="oldBrowserWarning" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #fdf5e6; color: #3a2c1f; z-index: 999999; text-align: center; padding: 30px; box-sizing: border-box; flex-direction: column; justify-content: center; align-items: center; font-family: inherit; direction: rtl;">
+        <i class="fa-solid fa-triangle-exclamation" style="font-size: 5rem; color: #a7634b; margin-bottom: 20px;"></i>
+        <h2 style="margin-bottom: 15px; color: #a7634b;">متصفحك قديم جداً!</h2>
+        <p style="font-size: 1.2rem; line-height: 1.6; margin-bottom: 25px; font-weight: bold;">
+        عذراً، يبدو أنك تستخدم متصفحاً قديماً لا يدعم التقنيات الحديثة المطلوبة لتشغيل تطبيق "الزرگ".<br><br>
+        الرجاء <strong>استخدام متصفح آخر حديث</strong> أو <strong>تحديث متصفحك الحالي</strong> ليعمل التطبيق بالشكل الصحيح وحفظ تقدمك.
+        </p>
+        <div style="padding: 15px; background: #e9f5e6; border: 1px dashed #2b6e2f; border-radius: 10px; color: #2b6e2f; font-weight: bold;">
+            <i class="fa-solid fa-circle-info"></i> هذه الخطوة ضرورية لكي تعمل ميزات التطبيق والكناش بشكل صحيح.
+        </div>
+    </div>
+    
+    <div id="pwaBrowserWarning" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.7); backdrop-filter: blur(5px); z-index: 9999999; text-align: center; padding: 30px; box-sizing: border-box; flex-direction: column; justify-content: center; align-items: center; direction: rtl;">
+        <div style="background: #fdf5e6; color: #3a2c1f; padding: 30px; border-radius: 24px; max-width: 400px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); border: 2px solid #dbb42c;">
+            <i class="fa-solid fa-download" style="font-size: 4rem; color: #a7634b; margin-bottom: 20px;"></i>
+            <h2 style="margin-bottom: 15px; color: #a7634b;">تنبيه بخصوص تثبيت التطبيق!</h2>
+            <p style="font-size: 1.1rem; line-height: 1.6; margin-bottom: 25px; font-weight: bold;">
+            عذراً، المتصفح الحالي لا يدعم تثبيت التطبيقات بالشكل المطلوب كـ <span style="color: #d4493c;">PWA</span> على جهازك.<br><br>
+            لتتمكن من تثبيت "الزرگ" على شاشتك الرئيسية واستخدامه بدون إنترنت، يرجى فتح الموقع باستخدام أحد المتصفحات التالية فقط:
+                <br><br>
+                <span style="color: #2b6e2f;">Google Chrome</span> | <span style="color: #2b6e2f;">Safari</span> | <span style="color: #2b6e2f;">Samsung Browser</span>
+            </p>
+            <button onclick="document.getElementById('pwaBrowserWarning').style.display='none'" style="background: #a7634b; color: white; border: none; padding: 12px 20px; border-radius: 40px; font-size: 1.1rem; font-weight: bold; cursor: pointer; width: 100%; transition: 0.2s;">
+            متابعة التصفح على أي حال <i class="fa-solid fa-arrow-left"></i>
+            </button>
+        </div>
+    </div>
+    
+    <!-- نافذة قائمة المشتركين -->
+    <div id="subscribersModalOverlay" class="modal-overlay-bg hidden"></div>
+        <div id="subscribersModal" class="modal hidden">
+        <div class="modal-header">
+            <h3>المشتركون في خدمة الزرگ</h3>
+            <button class="close-modal" id="closeSubscribersModalBtn"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <div class="modal-info" style="margin-top: 15px;">
+            <div style="font-size: 1rem; color: #3a2c1f; margin-bottom: 15px; text-align: right;">
+            قائمة الطلاب المتميزين المشتركين في الخدمة:
+            </div>
+
+        <!-- قائمة المشتركين -->
+        <ul style="list-style-type: none; padding: 0; margin-bottom: 20px; text-align: right;max-height: 200px;overflow: auto">
+            <li style="padding: 10px; background: #e9f5e6; border: 1px dashed #2b6e2f; border-radius: 8px; margin-bottom: 8px; color: #2b6e2f; font-weight: bold;">
+                <i class="fa-solid fa-user-graduate"></i> أم المؤمنين
+            </li>
+            <li style="padding: 10px; background: #e9f5e6; border: 1px dashed #2b6e2f; border-radius: 8px; margin-bottom: 8px; color: #2b6e2f; font-weight: bold;">
+                <i class="fa-solid fa-user-graduate"></i> محمد يحي السالك
+            </li>
+            <li style="padding: 10px; background: #e9f5e6; border: 1px dashed #2b6e2f; border-radius: 8px; margin-bottom: 8px; color: #2b6e2f; font-weight: bold;">
+                <i class="fa-solid fa-user-graduate"></i> سيدي محمد ديولا
+            </li>
+            <li style="padding: 10px; background: #e9f5e6; border: 1px dashed #2b6e2f; border-radius: 8px; margin-bottom: 8px; color: #2b6e2f; font-weight: bold;">
+                <i class="fa-solid fa-user-graduate"></i> أحمد حامد محمدن بلاهي
+            </li>
+            <li style="padding: 10px; background: #e9f5e6; border: 1px dashed #2b6e2f; border-radius: 8px; margin-bottom: 8px; color: #2b6e2f; font-weight: bold;">
+                <i class="fa-solid fa-user-graduate"></i> تكبر سيدي أحمد السنهوري
+            </li>
+        </ul>
+
+        <div style="margin-top: 20px; border-top: 1px dashed #dbb42c; padding-top: 15px;">
+            <p style="font-size: 0.9rem; color: #555; margin-bottom: 10px;">للإنضمام إلى قائمة الطلاب المتميزين وتفعيل كافة الميزات، تواصل معنا:</p>
+
+            <!-- زر الواتساب -->
+            <a href="https://wa.me/22249014788?text=%D9%85%D8%B1%D8%AD%D8%A8%D8%A7%D8%8C%20%D8%A3%D8%B1%D9%8A%D8%AF%20%D8%A7%D9%84%D8%A5%D8%B4%D8%AA%D8%B1%D8%A7%D9%83%20%D9%81%D9%8A%20%D8%AE%D8%AF%D9%85%D8%A9%20%D8%A7%D9%84%D8%B2%D8%B1%DA%AF"
+               target="_blank"
+               class="verify-btn"
+               style="background: #25D366; display: flex; justify-content: center; align-items: center; gap: 8px; text-decoration: none; color: white;">
+                تواصل معنا على الواتساب للإشتراك     <i class="fa-brands fa-whatsapp"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+    <!-- خلفية نافذة العروض -->
+    <div id="offersModalOverlay" class="modal-overlay-bg hidden"></div>
+
+<!-- نافذة العروض -->
+    <div id="offersModal" class="modal hidden">
+        <div class="modal-header">
+            <h3>باقات الزرگ</h3>
+            <button class="close-modal" id="closeOffersModalBtn"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+    
+        <div class="modal-info" style="margin-top: 15px;">
+            <p style="font-size: 1rem; color: #3a2c1f; margin-bottom: 15px; text-align: right;">
+            اختر الباقة المناسبة لك وتمتع بميزات إضافية:
+            </p>
+        
+        <!-- عرض الزرگ بلس -->
+            <div style="background: #e9f5e6; border: 2px dashed #2b6e2f; border-radius: 12px; padding: 10px; margin-bottom: 15px; text-align: right; position: relative;">
+                <h4 style="color: #2b6e2f; margin-bottom: 5px;"><i class="fa-solid fa-palette"></i> الزرگ بلس</h4>
+                <p style="font-size: 0.9rem; color: #555; margin-bottom: 5px;">يتضمن: تغيير ألوان اللوح</p>
+                <div style="font-weight: bold; color: #a7634b; font-size: 1.2rem; text-align: left; position: absolute; bottom: 15px; left: 15px;">20 MRU</div>
+            </div>
+
+        <!-- عرض الزرگ برو -->
+            <div style="background: #fdf5e6; border: 2px dashed #dbb42c; border-radius: 12px; padding: 10px; margin-bottom: 15px; text-align: right; position: relative;">
+                <h4 style="color: #a89122; margin-bottom: 5px;"><i class="fa-solid fa-crown"></i> الزرگ برو</h4>
+                <p style="font-size: 0.9rem; color: #555; margin-bottom: 5px;">يتضمن: تغيير الألوان + الكناش</p>
+                <div style="font-weight: bold; color: #d4493c; font-size: 1.2rem; text-align: left; position: absolute; bottom: 15px; left: 15px;">40 MRU</div>
+            </div>
+
+        <!-- قسم الدفع عبر السداد -->
+            <div style="margin-top: 20px; border-top: 1px dashed #dbb42c; padding-top: 15px;">
+                <p style="font-size: 1rem; color: #3a2c1f; margin-bottom: 10px; font-weight: bold;">
+                    <i class="fa-solid fa-qrcode"></i>  الدفع عبر السداد وبنكيلي
+                </p>
+                <p style="font-size: 0.85rem; color: #555; margin-bottom: 10px;">امسح الرمز أدناه لتسديد قيمة الباقة المطلوبة:</p>
+
+                <div class="payment-qrcode" style="--logo: url(sadad_logo.png)">
+                    <img src="sadad_qrcode.png" alt="QR Code السداد" style="width: 110px; height: 110px; display: block;">
+                </div>
+                <div class="payment-qrcode" style="--logo: url(bankily_logo.png)">
+                    <img src="bankily_qrcode.png" alt="QR Code بنكيلي" style="width: 110px; height: 110px; display: block;">
+                </div>
+     
+                <p style="font-size: 0.85rem; color: #d4493c; margin-top: 10px; font-weight: bold;">
+                بعد إتمام الدفع، أرسل لنا صورة الدفع (كبتير) للحصول على كود التفعيل.
+                </p>
+                <input id="premiumCodeInput" placeholder="أدخل رمز التفعيل.." class="input-code">
+                <button id="activateBtn" class="premium-btn">تفعيل <i class="fas fa-key"></i></button>
+            <!-- زر التواصل عبر واتساب -->
+                <a href="https://wa.me/22249014788?text=%D9%85%D8%B1%D8%AD%D8%A8%D8%A7%D8%8C%20%D9%84%D9%82%D8%AF%20%D9%82%D9%85%D8%AA%20%D8%A8%D8%AA%D8%B3%D8%AF%D9%8A%D8%AF%20%D8%A7%D9%84%D8%A8%D8%A7%D9%82%D8%A9%20%D9%88%D8%A3%D8%B1%D9%8A%D8%AF%20%D9%83%D9%88%D8%AF%20%D8%A7%D9%84%D8%AA%D9%81%D8%B9%D9%8A%D9%84." 
+                   target="_blank" 
+                   class="verify-btn" 
+                   style="background: #25D366; display: flex; justify-content: center; align-items: center; gap: 8px; text-decoration: none; color: white; margin-top: 15px;">
+                إرسال كبتير <i class="fa-brands fa-whatsapp"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+    
+    <!-- خلفية نافذة الإعدادات -->
+    <div id="settingsModalOverlay" class="modal-overlay-bg hidden"></div>
+
+<!-- نافذة الإعدادات -->
+    <div id="settingsModal" class="modal hidden">
+        <div class="modal-header">
+            <h3>الإعدادات</h3>
+            <button class="close-modal" id="closeSettingsModalBtn"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+    
+        <div class="modal-info" style="margin-top: 15px;">
+            <p style="font-size: 1rem; color: #3a2c1f; margin-bottom: 15px; text-align: right;">
+            خصص إعدادات التطبيق بما يناسبك:
+            </p>
+
+        <!-- خيار تفعيل الإشعارات -->
+            <div style="display: flex; justify-content: space-between; align-items: center; padding: 15px; background: #fdf5e6; border: 1px solid #dbb42c; border-radius: 12px;">
+                <span style="font-size: 1.1rem; color: #3a2c1f; font-weight: bold;">
+                    <i class="fa-solid fa-bell" style="color: #a7634b;"></i> تفعيل الإشعارات
+                </span>
+            
+            <!-- زر التبديل (Toggle Switch) -->
+                <label class="switch">
+                    <input type="checkbox" id="notificationToggle">
+                    <span class="slider round"></span>
+                </label>
+            </div>
+
+            <div id="settingsMessage" class="success-msg hidden" style="margin-top: 15px; text-align: center;"></div>
+        </div>
+    </div>
+    
+    <div id="shagarlyModalOverlay" class="modal-overlay-bg hidden"></div>
+        <div id="shagarlyModal" class="modal hidden">
+        <div class="modal-header">
+            <h3>شگرلي</h3>
+            <button class="close-modal" id="closeShagarlyBtn"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <div class="modal-info" style="margin-top: 15px;">
+            <div id="shagarlyLoading" style="display: none; text-align: center; color: #a7634b; font-weight: bold;">
+                <i class="fa-solid fa-spinner fa-spin" style="font-size: 2rem; margin-bottom: 10px;"></i>
+                <p>جاري قراءة اللوح... الرجاء الانتظار</p>
+            </div>
+            <div id="shagarlyResult" style="text-align: right; font-size: 1.2rem; line-height: 1.8; color: #3a2c1f;">
+            <!-- سيتم عرض النتيجة هنا -->
+            </div>
+            <div style="margin-top: 20px; border-top: 1px dashed #dbb42c; padding-top: 15px;">
+                <p style="font-size: 0.9rem; color: #555;">الكلمات باللون <span style="color: red;">الأحمر</span> تحتوي على أخطاء إملائية أو في الرسم.</p>
+            </div>
+        </div>
+    </div>
+    
+    <!-- نافذة المحادثة (Chatbot) -->
+<div id="chatbotModalOverlay" class="modal-overlay-bg hidden"></div>
+<div id="chatbotModal" class="modal hidden">
+    <div class="modal-header">
+        <h3>حساني - المساعد الذكي</h3>
+        <button class="close-modal" id="closeChatbotBtn"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    <div class="modal-info" style="margin-top: 15px;">
+        <div id="chatbotMessages" style="
+            background: #fdf5e6;
+            border-radius: 12px;
+            padding: 15px;
+            height: 250px;
+            overflow-y: auto;
+            margin-bottom: 15px;
+            border: 1px solid #dbb42c;
+            text-align: right;
+            direction: rtl;
+        ">
+            <div class="bot-msg">مرحباً! أنا حساني، تحدث معي بالحسانية.</div>
+        </div>
+        <div style="display: flex; gap: 10px; align-items: center;">
+            <input type="text" id="chatbotInput" placeholder="اكتب رسالتك هنا..." style="
+                flex: 1;
+                padding: 12px;
+                border-radius: 40px;
+                border: 1px solid #dbb42c;
+                background: white;
+                font-family: inherit;
+                font-size: 1rem;
+                outline: none;
+            ">
+            <button id="sendChatbotBtn" style="
+                background: #a7634b;
+                color: white;
+                border: none;
+                border-radius: 40px;
+                padding: 12px 20px;
+                font-size: 1.2rem;
+                cursor: pointer;
+                transition: 0.2s;
+            "><i class="fa-solid fa-paper-plane"></i></button>
+        </div>
+    </div>
+</div>
+
+    <div id="progressModalOverlay" class="modal-overlay-bg hidden"></div>
+
+    <div id="progressModal" class="modal hidden progress-modal">
+        <div class="modal-header">
+            <h3>ميزة تقدم الطالب <i class="fa-solid fa-star" style="color: var(--gold-main);"></i></h3>
+            <button class="close-modal" id="closeProgressModalBtn"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+    
+        <div class="modal-info" style="margin-top: 15px; text-align: center;">
+            <div class="progress-icon-container">
+                <i class="fa-solid fa-chart-line progress-icon"></i>
+                <i class="fa-solid fa-lock lock-badge"></i>
+            </div>
+        
+            <h2 style="color: #3a2c1f; margin-bottom: 10px; font-size: 1.4rem;">اكتشف مستوى ضبطك وتطورك اليومي!</h2>
+            <p style="color: #666; margin-bottom: 20px; font-size: 0.95rem; line-height: 1.6;">
+            افتح لوحة الإحصائيات المتقدمة لتتبع الكلمات التي قمت بضبطها، ومعرفة الأخطاء الشائعة لديك، وحفظ تقدمك السنوي في رسم المصحف الشريف.
+            </p>
+
+            <ul class="progress-features-list">
+                <li><i class="fa-solid fa-check-double"></i> حفظ تلقائي لجميع محاولاتك واختباراتك.</li>
+                <li><i class="fa-solid fa-pie-chart"></i> رسوم بيانية توضح نسبة إتقانك لكل قاعدة (حذف، إثبات، إلخ).</li>
+                <li><i class="fa-solid fa-clock-rotate-left"></i> سجل كامل لمراجعة الكلمات الصعبة وتصحيحها.</li>
+            </ul>
+            
+            <div class="payment-details">
+                <span class="payment_note">يمكنكم الدفع على هذا الرقم:</span>
+                <span class="payment _number">32478788</span> 
+                <a class="directing_payment_image" href="https://wa.me/22249014788?text=السلام عليكم سأشترك في ميزة التقدم رمزي هو">أرسل صورة الدفع</a>
+            </div>
+            
+            <div class="price-box">
+                <div class="price-title">تفعيل مدى الحياة (شراء لمرة واحدة)</div>
+                <div class="price-value">200 <span class="currency">أوقية جديدة (MRU)</span></div>
+                <p class="payment-methods-text"><i class="fa-solid fa-wallet"></i> الدفع سريع وآمن عبر <b>Bankily</b> أو <b>Masrivi</b></p>
+            </div>
+
+            <button id="activateProgressBtn" class="verify-btn" style="background: var(--brown-main); display: flex; justify-content: center; align-items: center; gap: 10px; width: 100%; margin-top: 15px;">
+            تفعيل الميزة الآن <i class="fa-solid fa-bolt"></i>
+            </button>
+        </div>
+    </div>
+    
+    <div id="installOverlay" class="modal-overlay-bg hidden"></div> 
+    <div id="installModal" class="modal hidden">
+        <div class="modal-header">
+            <h3>تثبيت التطبيق</h3>
+        </div>
+        <h2>مرحبا بك في الزرگ <i class="fa-solid fa-mobile-screen-button"></i></h2>
+        <p style="margin-bottom: 10px">للحصول على أفضل تجربة، يجب تثبيت التطبيق على جهازك لتتمكن من استخدامه.</p>
+        <button style="margin-bottom: 10px" id="showInstallModalBtn" class="premium-btn"><i class="fa-solid fa-download"></i> تثبيت</button>
+        <button style="background-color: #212F3D;color: var(--white)" id="continueBrowserBtn" class="premium-btn"><i class="fa-solid fa-globe"></i> متابعة على المتصفح</button>
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="script.js"></script>
+</body>
+</html>

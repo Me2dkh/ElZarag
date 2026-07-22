@@ -1,0 +1,51 @@
+classes:
+    [lewa7],
+    [lewa7-container],
+    [lewa7-intro],
+    [ta7at],
+    [aya],
+    [elkalamah],
+    [abiat],
+    [abiat-container],
+    [hazef],
+    [hazefan],
+    [hazef-ol],
+    [thbat],
+    [thbatan],
+    [thbat-ol]
+    
+
+id's: 
+    [ta7at],
+    [aya],
+    [elkalamah],
+    [hazef],
+    [hazefan],
+    [hazef-ol],
+    [thbat],
+    [thabatan],
+    [thabat-ol]
+
+functions:
+    [mo7zofah],
+    [mo7zofan],
+    [mo7zofOl]
+    [thbatah],
+    [thbatan],
+    [thbatOl]
+
+varibales:
+    [elkalamah],
+    [hazef],
+    [hazefan],
+    [hazefOl],
+    [thbat],
+    [thabatan],
+    [thabatOl]
+
+soruces: 
+    [main.js]
+    [js]=>
+        [mo7zofah.js],
+        [mo7zofan.js],
+        [mo7zofOl.js]

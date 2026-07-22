@@ -1,0 +1,698 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>مدير قواعد الزرگ</title>
+    <style>
+    	@font-face {
+    		font-family: uthmanic;
+    		src: url("uthmanic_warsh_v21.ttf");
+		}
+		
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: uthmanic;
+        }
+
+        body {
+            background: linear-gradient(135deg, #f5e6d3, #e8d5b5);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: #8b7355;
+            border-radius: 30px;
+            padding: 25px;
+            box-shadow: 0 20px 30px rgba(0,0,0,0.3);
+            border: 3px solid #b89b7a;
+        }
+
+        h1 {
+            color: #ffd700;
+            text-align: center;
+            margin-bottom: 10px;
+            font-size: 2em;
+            text-shadow: 2px 2px 0 #5d3a1a;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #e6c7a2;
+            margin-bottom: 30px;
+        }
+
+        .input-section {
+            background: #b48643;
+            padding: 20px;
+            border-radius: 20px;
+            margin-bottom: 30px;
+            border: 2px solid #d4a76a;
+        }
+
+        .input-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            align-items: flex-end;
+        }
+
+        .field {
+            flex: 1 1 200px;
+        }
+
+        .field label {
+            display: block;
+            color: #ffd700;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        .field input, .field select {
+            width: 100%;
+            padding: 10px;
+            border: none;
+            border-radius: 10px;
+            background: #ffecb3;
+            font-size: 1em;
+            border: 2px solid #5d3a1a;
+        }
+
+        .field input:focus, .field select:focus {
+            outline: none;
+            border-color: #ffd700;
+        }
+
+        .buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 30px;
+            background: #5d3a1a;
+            color: #ffd700;
+            font-weight: bold;
+            font-size: 1em;
+            cursor: pointer;
+            transition: 0.2s;
+            border: 2px solid #b89b7a;
+        }
+
+        .btn:hover {
+            background: #7b522a;
+            transform: translateY(-2px);
+        }
+
+        .btn.primary {
+            background: #ffd700;
+            color: #5d3a1a;
+            border-color: #5d3a1a;
+        }
+
+        .btn.primary:hover {
+            background: #e6c200;
+        }
+
+        .btn.danger {
+            background: #a0522d;
+            color: white;
+        }
+
+        .btn.danger:hover {
+            background: #b95e3a;
+        }
+
+        .table-section {
+            background: #b48643;
+            padding: 20px;
+            border-radius: 20px;
+            border: 2px solid #d4a76a;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: #ffecb3;
+            border-radius: 15px;
+            overflow: hidden;
+        }
+
+        th {
+            background: #5d3a1a;
+            color: #ffd700;
+            padding: 12px;
+            font-weight: bold;
+        }
+
+        td {
+            padding: 10px;
+            border-bottom: 1px solid #b89b7a;
+            color: #5d3a1a;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        .action-btn {
+            padding: 5px 10px;
+            margin: 0 3px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9em;
+        }
+
+        .edit-btn {
+            background: #ffd700;
+            color: #5d3a1a;
+        }
+
+        .delete-btn {
+            background: #a0522d;
+            color: white;
+        }
+
+        .empty-message {
+            text-align: center;
+            padding: 20px;
+            color: #5d3a1a;
+            font-style: italic;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 20px;
+            color: #e6c7a2;
+        }
+
+        .stats {
+            display: flex;
+            justify-content: space-between;
+            color: #ffd700;
+            margin-top: 15px;
+            font-size: 1.1em;
+        }
+
+        /* التبويبات */
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #5d3a1a;
+            padding-bottom: 10px;
+        }
+
+        .tab {
+            padding: 10px 20px;
+            background: #b48643;
+            border: none;
+            border-radius: 15px 15px 0 0;
+            color: #ffd700;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .tab.active {
+            background: #ffd700;
+            color: #5d3a1a;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .code-box {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 20px;
+            border-radius: 10px;
+            font-family: monospace;
+            white-space: pre-wrap;
+            direction: ltr;
+            text-align: left;
+            max-height: 400px;
+            overflow: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📋 مدير قواعد الزرگ</h1>
+        <div class="subtitle">أداة مساعدة لإدارة دوال التحويل في checkAnswer</div>
+
+        <div class="tabs">
+            <button class="tab active" onclick="showTab('rules')">📝 القواعد</button>
+            <button class="tab" onclick="showTab('export')">📤 تصدير</button>
+            <button class="tab" onclick="showTab('import')">📥 استيراد</button>
+        </div>
+
+        <!-- تبويب القواعد -->
+        <div id="tab-rules" class="tab-content active">
+            <div class="input-section">
+                <h2 style="color: #ffd700; margin-bottom: 15px;">➕ إضافة قاعدة جديدة</h2>
+                <div class="input-group">
+                    <div class="field">
+                        <label>الكلمة الأصلية (Input):</label>
+                        <input list="question-option" type="text" id="inputWord" placeholder="مثال: الذينهم">
+                        <datalist id="question-option">
+						</datalist>
+                    </div>
+                    <div class="field">
+                        <label>الكلمة بعد التحويل (Output):</label>
+                        <input type="text" id="outputWord" placeholder="مثال: الذين هم">
+                    </div>
+                    <div class="field">
+                        <label>نوع الضمير:</label>
+                        <select id="ruleType">
+                            <option value="منفصلة">منفصلة</option>
+                            <option value="متصلة">متصلة</option>
+                            <option value="محذوفة">محذوفة</option>
+                            <option value="محذوفان">محذوفان</option>
+                            <option value="ياء">ياء</option>
+                            <option value="وصل">وصل</option>
+                            <option value="نقل">نقل</option>
+                            <option value="واو">واو</option>
+                            <option value="تاء">تاء</option>
+                            <option value="أخرى">أخرى</option>
+                            <option value="اللام الثاني">اللام الثاني</option>
+                        </select>
+                    </div>
+                    <div class="field">
+                        <label>ملاحظات:</label>
+                        <input type="text" id="note" placeholder="اختياري">
+                    </div>
+                </div>
+                <div class="buttons">
+                    <button class="btn primary" onclick="addRule()">💾 حفظ القاعدة</button>
+                    <button class="btn" onclick="clearForm()">🧹 مسح الحقول</button>
+                </div>
+            </div>
+
+            <div class="table-section">
+                <h2 style="color: #ffd700; margin-bottom: 15px;">📌 القواعد الحالية</h2>
+                <div style="overflow-x: auto;">
+                    <table id="rulesTable">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>الكلمة الأصلية</th>
+                                <th>بعد التحويل</th>
+                                <th>النوع</th>
+                                <th>ملاحظات</th>
+                                <th>إجراءات</th>
+                            </tr>
+                        </thead>
+                        <tbody id="rulesBody">
+                            <!-- سيتم ملؤها بواسطة JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+                <div class="stats">
+                    <span>إجمالي القواعد: <span id="totalRules">0</span></span>
+                    <span>آخر تحديث: <span id="lastUpdate">-</span></span>
+                </div>
+            </div>
+        </div>
+
+        <!-- تبويب التصدير -->
+        <div id="tab-export" class="tab-content">
+            <div class="input-section">
+                <h2 style="color: #ffd700; margin-bottom: 15px;">📤 تصدير القواعد</h2>
+                <p style="color: #e6c7a2; margin-bottom: 15px;">انسخ الكود التالي وأضفه إلى دالة checkAnswer في ملف script.js</p>
+                <div class="code-box" id="exportCode">
+                    // سيتم توليد الكود تلقائياً
+                </div>
+                <div class="buttons">
+                    <button class="btn primary" onclick="copyToClipboard()">📋 نسخ الكود</button>
+                    <button class="btn" onclick="exportAsJSON()">💾 تصدير JSON</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- تبويب الاستيراد -->
+        <div id="tab-import" class="tab-content">
+            <div class="input-section">
+                <h2 style="color: #ffd700; margin-bottom: 15px;">📥 استيراد قواعد</h2>
+                <p style="color: #e6c7a2; margin-bottom: 15px;">الصق ملف JSON أو أدخل القواعد يدوياً</p>
+                <textarea id="importData" rows="10" style="width: 100%; padding: 10px; border-radius: 10px; border: 2px solid #5d3a1a; background: #ffecb3; direction: ltr;" placeholder='[{"input": "الذينهم", "output": "الذين هم", "type": "منفصلة", "note": ""}, ...]'></textarea>
+                <div class="buttons">
+                    <button class="btn primary" onclick="importRules()">📦 استيراد</button>
+                    <button class="btn" onclick="loadDefaultRules()">🔄 تحميل القواعد الافتراضية (من الزرگ)</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            ⚡ أداة مساعدة لتطوير برنامج الزرگ - تصميم حسب طلب الشيخ محمد خطار
+        </div>
+    </div>
+
+    <script>
+        // مفتاح التخزين في localStorage
+        const STORAGE_KEY = 'zark_rules';
+
+        // القواعد الافتراضية (مأخوذة من كود الزرگ الحالي)
+        const DEFAULT_RULES = [
+            { input: "الذينهم", output: "الذين هم", type: "منفصلة", note: "فصل ضمير" },
+            { input: "الفردوسهم", output: "الفردوس هم", type: "منفصلة", note: "" },
+            { input: "وبالنجمهم", output: "وبالنجم هم", type: "منفصلة", note: "" },
+            { input: "البغيهم", output: "البغي هم", type: "منفصلة", note: "" },
+            { input: "والكفرونهم", output: "والكفرون هم", type: "منفصلة", note: "" },
+            { input: "وبالاخرتهم", output: "وبلاخرة هم", type: "منفصلة", note: "" },
+            { input: "الذيهم", output: "الذے هم", type: "منفصلة", note: "" },
+            { input: "امهم", output: "ام هم", type: "منفصلة", note: "" },
+            { input: "انهم", output: "ان هم", type: "منفصلة", note: "" },
+            { input: "وانهم", output: "وان هم", type: "منفصلة", note: "" },
+            { input: "وانكن", output: "وان كن", type: "منفصلة", note: "" },
+            { input: "وانكنا", output: "وان كنا", type: "منفصلة", note: "" },
+            { input: "بناتيهن", output: "بناتي هن", type: "منفصلة", note: "" },
+            { input: "بلهم", output: "بل هم", type: "منفصلة", note: "" },
+            { input: "فكهونهم", output: "فكهون هم", type: "منفصلة", note: "" },
+            { input: "اوليكهم", output: "اوليك هم", type: "منفصلة", note: "" },
+            { input: "ثمهم", output: "ثم هم", type: "منفصلة", note: "" },
+            { input: "يومهم", output: "يوم هم", type: "منفصلة", note: "" },
+            { input: "اينما", output: "اين ما", type: "منفصلة", note: "" },
+            { input: "لكيلا", output: "لكي لا", type: "منفصلة", note: "" },
+            { input: "كيلا", output: "كي لا", type: "منفصلة", note: "" },
+            { input: "انتقع", output: "ان تقع", type: "منفصلة", note: "" },
+            { input: "انتتكبر", output: "ان تتكبر", type: "منفصلة", note: "" },
+            { input: "انتبيد", output: "ان تبيد", type: "منفصلة", note: "" },
+            { input: "انتبتغي", output: "ان تبتغي", type: "منفصلة", note: "" },
+            { input: "انتاتيهم", output: "ان تاتيهم", type: "منفصلة", note: "" },
+            { input: "انبورك", output: "ان بورك", type: "منفصلة", note: "" },
+            { input: "انراه", output: "ان راه", type: "منفصلة", note: "" },
+            { input: "انرا", output: "ان را", type: "منفصلة", note: "" },
+            { input: "اننمن", output: "ان نمن", type: "منفصلة", note: "" },
+            { input: "اننطمس", output: "ان نطمس", type: "منفصلة", note: "" },
+            { input: "اننزغ", output: "ان نزغ", type: "منفصلة", note: "" },
+            { input: "انمن", output: "ان نمن", type: "منفصلة", note: "" },
+            { input: "انلعنت", output: "ان لعنت", type: "منفصلة", note: "" },
+            { input: "وانليس", output: "وان ليس", type: "منفصلة", note: "" },
+            { input: "انمسني", output: "ان مسني", type: "منفصلة", note: "" },
+            { input: "وانلو", output: "وان لو", type: "منفصلة", note: "" },
+            { input: "انلو", output: "ان لو", type: "منفصلة", note: "" },
+            { input: "انصدوكم", output: "ان صدوكم", type: "منفصلة", note: "" },
+            { input: "انسبحوا", output: "ان سبحوا", type: "منفصلة", note: "" },
+            { input: "انسيكون", output: "ان سيكون", type: "منفصلة", note: "" },
+            { input: "انصبرنا", output: "ان صبرنا", type: "منفصلة", note: "" },
+            { input: "انقد", output: "ان قد", type: "منفصلة", note: "" },
+            { input: "انهدينا", output: "ان هدينا", type: "منفصلة", note: "" },
+            { input: "انجا كم", output: "ان جاكم", type: "منفصلة", note: "" },
+            { input: "انكذب", output: "ان كذب", type: "منفصلة", note: "" },
+            { input: "انكتب", output: "ان كتب", type: "منفصلة", note: "" },
+            { input: "انسخط", output: "ان سخط", type: "منفصلة", note: "" },
+            { input: "انغضب", output: "ان غضب", type: "منفصلة", note: "" },
+            { input: "فيما", output: "فے ما", type: "منفصلة", note: "" },
+            { input: "فبيسما", output: "فبيس ما", type: "منفصلة", note: "" },
+            { input: "لبيسما", output: "لبس ما", type: "منفصلة", note: "" },
+            { input: "هلهن", output: "هل هن", type: "منفصلة", note: "" },
+            { input: "عنما", output: "عن ما", type: "منفصلة", note: "" },
+            { input: "مما", output: "من ما", type: "منفصلة", note: "" },
+            { input: "فمما", output: "فمن ما", type: "منفصلة", note: "" },
+            { input: "كلما", output: "كل ما", type: "منفصلة", note: "" },
+            { input: "امن", output: "ام من", type: "منفصلة", note: "" },
+            { input: "ا لا", output: "الا", type: "متصلة", note: "" },
+            { input: "ا منتم", output: "اامنتم", type: "محذوفة", note: "" },
+            { input: "ا لهتنا", output: "االهتنا", type: "محذوفة", note: "" },
+            { input: "وا للا", output: "والے", type: "محذوفة", note: "" },
+            { input: "اللاتے", output: "التے", type: "محذوفة", note: "" },
+            { input: "بلا", output: "بلوا", type: "محذوفة", note: "" },
+            { input: "قرانا", output: "قرانا", type: "محذوفة", note: "" },
+            { input: "يابراهيم", output: "يابرهيم", type: "محذوفة", note: "" },
+            { input: "الليل", output: "اليل", type: "اللام الثاني", note: "" },
+            { input: "لله", output: "لله", type: "اللام الثاني", note: "" },
+            { input: "ساريكم", output: "ساوريكم", type: "واو", note: "" },
+            { input: "الوا", output: "اولوا", type: "واو", note: "" },
+            { input: "الے", output: "اولے", type: "واو", note: "" },
+            { input: "الا", output: "اولا", type: "واو", note: "" },
+            { input: "اليك", output: "اوليك", type: "واو", note: "" },
+            { input: "والت", output: "واولت", type: "واو", note: "" },
+            { input: "فاراه", output: "فاريه", type: "ياء", note: "" },
+            { input: "راا", output: "راي", type: "ياء", note: "" }
+        ];
+
+        // تحميل القواعد من localStorage أو استخدام الافتراضية
+        let rules = [];
+        
+        function loadRules() {
+            const stored = localStorage.getItem(STORAGE_KEY);
+            if (stored) {
+                try {
+                    rules = JSON.parse(stored);
+                } catch (e) {
+                    rules = [...DEFAULT_RULES];
+                }
+            } else {
+                rules = [...DEFAULT_RULES];
+            }
+            renderTable();
+            updateStats();
+            generateExportCode();
+        }
+
+        function saveRules() {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(rules));
+            renderTable();
+            updateStats();
+            generateExportCode();
+        }
+
+        function renderTable() {
+            const tbody = document.getElementById('rulesBody');
+            if (rules.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="6" class="empty-message">لا توجد قواعد بعد. أضف قاعدة جديدة!</td></tr>';
+                return;
+            }
+
+            let html = '';
+            rules.forEach((rule, index) => {
+                html += `
+                    <tr>
+                        <td>${index + 1}</td>
+                        <td>${rule.input || ''}</td>
+                        <td>${rule.output || ''}</td>
+                        <td>${rule.type || ''}</td>
+                        <td>${rule.note || ''}</td>
+                        <td>
+                            <button class="action-btn edit-btn" onclick="editRule(${index})">✏️</button>
+                            <button class="action-btn delete-btn" onclick="deleteRule(${index})">🗑️</button>
+                        </td>
+                    </tr>
+                `;
+            });
+            tbody.innerHTML = html;
+        }
+        
+        let questionsData = []
+        let answersData   = []
+async function fetchLocalJSON(fileName) {
+    try {
+        const response = await fetch(`json/${fileName}`);
+        if (!response.ok) throw new Error(`تعذر تحميل ${fileName}`);
+        const arr = await response.json();
+        return Array.isArray(arr) ? arr : [];
+    } catch (error) {
+        console.error("⚠️ خطأ في تحميل الملف:", error);
+        return [];
+    }
+}
+
+async function loadAllTables() {
+    const merged = await fetchLocalJSON("angko.json");
+
+    questionsData = merged.map(item => item[0]);
+    answersData   = merged.map(item => item[1]);
+	
+	questionsData.forEach((q, i) => {
+		const opt = document.createElement("option");
+		
+		opt.textContent = q
+		
+		const inputWord = document.getElementById('inputWord');
+            inputWord.addEventListener('input', function(e) {
+                const word = e.target.value.trim();
+                if (!word) return;
+                const index = questionsData.indexOf(word);
+                if (index !== -1 && answersData[index]) {
+                    document.getElementById('ruleType').value = answersData[index];
+                }
+            });
+		
+		document.getElementById("question-option").appendChild(opt)
+	})
+}
+
+        function updateStats() {
+            document.getElementById('totalRules').textContent = rules.length;
+            document.getElementById('lastUpdate').textContent = new Date().toLocaleTimeString('ar-EG');
+        }
+
+        function addRule() {
+            const input = document.getElementById('inputWord').value.trim();
+            const output = document.getElementById('outputWord').value.trim();
+            const type = document.getElementById('ruleType').value;
+            const note = document.getElementById('note').value.trim();
+
+            if (!input || !output) {
+                alert('الرجاء إدخال الكلمة الأصلية والكلمة بعد التحويل');
+                return;
+            }
+
+            rules.push({ input, output, type, note });
+            saveRules();
+            clearForm();
+        }
+
+        function editRule(index) {
+            const rule = rules[index];
+            document.getElementById('inputWord').value = rule.input || '';
+            document.getElementById('outputWord').value = rule.output || '';
+            document.getElementById('ruleType').value = rule.type || 'منفصلة';
+            document.getElementById('note').value = rule.note || '';
+
+            // حذف القاعدة القديمة
+            rules.splice(index, 1);
+            saveRules();
+        }
+
+        function deleteRule(index) {
+            if (confirm('هل أنت متأكد من حذف هذه القاعدة؟')) {
+                rules.splice(index, 1);
+                saveRules();
+            }
+        }
+
+        function clearForm() {
+            document.getElementById('inputWord').value = '';
+            document.getElementById('outputWord').value = '';
+            document.getElementById('ruleType').value = 'منفصلة';
+            document.getElementById('note').value = '';
+        }
+
+        // توليد كود JavaScript يمكن إضافته إلى checkAnswer
+        function generateExportCode() {
+            // تجميع القواعد حسب النوع
+            const grouped = {};
+            rules.forEach(rule => {
+                const type = rule.type || 'أخرى';
+                if (!grouped[type]) grouped[type] = [];
+                grouped[type].push(rule);
+            });
+
+            let code = '// قواعد التحويل المستخرجة من مدير القواعد\n\n';
+            code += 'function applySpecialRules(word, chosenWord) {\n';
+            code += '    switch(chosenWord) {\n';
+
+            for (const type in grouped) {
+                code += `        case "${type}":\n`;
+                grouped[type].forEach(rule => {
+                    code += `            if (word === "${rule.input}") return "${rule.output}";\n`;
+                });
+                code += '            break;\n';
+            }
+
+            code += '        default:\n';
+            code += '            break;\n';
+            code += '    }\n';
+            code += '    return word;\n';
+            code += '}\n\n';
+
+            code += '// مثال للاستخدام في checkAnswer:\n';
+            code += '/*\n';
+            code += 'if (chosenWord === correctAnswer) {\n';
+            code += '    const newWord = applySpecialRules(elkalamah.textContent, chosenWord);\n';
+            code += '    if (newWord !== elkalamah.textContent) {\n';
+            code += '        elkalamah.textContent = newWord;\n';
+            code += '        return;\n';
+            code += '    }\n';
+            code += '}\n';
+            code += '*/\n';
+
+            document.getElementById('exportCode').textContent = code;
+        }
+
+        function copyToClipboard() {
+            const code = document.getElementById('exportCode').textContent;
+            navigator.clipboard.writeText(code).then(() => {
+                alert('تم نسخ الكود إلى الحافظة!');
+            }).catch(() => {
+                alert('فشل النسخ، يمكنك نسخ الكود يدوياً.');
+            });
+        }
+
+        function exportAsJSON() {
+            const dataStr = JSON.stringify(rules, null, 2);
+            const blob = new Blob([dataStr], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'zark_rules.json';
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        function importRules() {
+            const importData = document.getElementById('importData').value.trim();
+            if (!importData) {
+                alert('الرجاء إدخال البيانات');
+                return;
+            }
+
+            try {
+                const imported = JSON.parse(importData);
+                if (Array.isArray(imported)) {
+                    rules = imported;
+                    saveRules();
+                    alert('تم استيراد القواعد بنجاح!');
+                    document.getElementById('importData').value = '';
+                } else {
+                    alert('البيانات يجب أن تكون مصفوفة');
+                }
+            } catch (e) {
+                alert('خطأ في تنسيق JSON');
+            }
+        }
+
+        function loadDefaultRules() {
+            rules = [...DEFAULT_RULES];
+            saveRules();
+            document.getElementById('importData').value = JSON.stringify(DEFAULT_RULES, null, 2);
+            alert('تم تحميل القواعد الافتراضية');
+        }
+
+        // تبديل التبويبات
+        function showTab(tabName) {
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+
+            document.querySelector(`.tab[onclick="showTab('${tabName}')"]`).classList.add('active');
+            document.getElementById(`tab-${tabName}`).classList.add('active');
+
+            if (tabName === 'export') {
+                generateExportCode();
+            }
+        }
+
+        // تحميل القواعد عند بدء التشغيل
+        loadRules();
+        
+        document.addEventListener("DOMContentLoaded", () => {loadAllTables()});
+    </script>
+</body>
+</html>

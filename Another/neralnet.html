@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <title>الزرگ - El Zarag | ميزة الألوان المدفوعة</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="description" content="الزرگ هو برنامج تعليمي لرسم القرءان الكريم، أضف لمسة خاصة بلوحك عبر ألوان حصرية">
+    <meta name="keywords" content="الزرك, الزرگ رسم, الطالب عـبدالله, تطبيق الرسم, الزرگ, ألوان مدفوعة">
+    <!-- Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-G3CG9LP902"></script>
+    <script> window.dataLayer = window.dataLayer || []; function gtag(){dataLayer.push(arguments);} gtag('js', new Date()); gtag('config', 'G-G3CG9LP902'); </script>
+    <link rel="icon" href="logo.png" type="image/x-icon">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* أنماط إضافية للميزة المدفوعة */
+        .premium-btn {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            background: linear-gradient(145deg, #D4AF37, #B8901A);
+            border: none;
+            border-radius: 50px;
+            padding: 10px 18px;
+            font-weight: bold;
+            font-size: 1rem;
+            color: #2c2c2c;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            cursor: pointer;
+            z-index: 55;
+            font-family: uthmanic, sans-serif;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .premium-btn:hover {
+            transform: scale(1.02);
+            box-shadow: 0 6px 16px rgba(0,0,0,0.4);
+        }
+        /* نافذة الدفع والألوان */
+        .payment-modal {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 90%;
+            max-width: 380px;
+            background: #fef7e0;
+            border-radius: 32px;
+            box-shadow: 0 25px 45px rgba(0,0,0,0.4);
+            z-index: 1000;
+            padding: 20px 18px 28px;
+            direction: rtl;
+            font-family: uthmanic, 'Segoe UI', sans-serif;
+            transition: all 0.3s;
+            border: 2px solid #dbb42c;
+        }
+        .payment-modal .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid #e0b354;
+            padding-bottom: 8px;
+            margin-bottom: 18px;
+        }
+        .payment-modal .modal-header h3 {
+            margin: 0;
+            color: #a7634b;
+            font-size: 1.5rem;
+        }
+        .close-modal {
+            background: #d4493c;
+            color: white;
+            border: none;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            font-size: 24px;
+            cursor: pointer;
+            line-height: 1;
+        }
+        .payment-info {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .bank-number {
+            background: #2c5a2e;
+            color: #ffd966;
+            padding: 8px;
+            border-radius: 40px;
+            font-size: 1.6rem;
+            font-weight: bold;
+            letter-spacing: 2px;
+            margin: 10px 0;
+            direction: ltr;
+            display: inline-block;
+            padding: 5px 20px;
+        }
+        .payment-image {
+            background: #ddd2b0;
+            border-radius: 24px;
+            padding: 12px;
+            margin: 15px 0;
+            text-align: center;
+            border: 1px dashed #b68b40;
+        }
+        .payment-image img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 16px;
+            background: white;
+        }
+        .fake-qr {
+            background: #eeeeee;
+            padding: 8px;
+            font-size: 0.8rem;
+            color: #3a2c1f;
+            border-radius: 12px;
+        }
+        .input-code {
+            width: 100%;
+            padding: 12px;
+            font-size: 1.2rem;
+            text-align: center;
+            border: 2px solid #d4a017;
+            border-radius: 60px;
+            background: white;
+            font-family: monospace;
+            margin: 10px 0;
+        }
+        .verify-btn {
+            background: #2e7d32;
+            width: 100%;
+            padding: 10px;
+            border: none;
+            border-radius: 40px;
+            color: white;
+            font-weight: bold;
+            font-size: 1.2rem;
+            margin-top: 5px;
+            cursor: pointer;
+        }
+        .color-palette {
+            display: flex;
+            justify-content: space-between;
+            gap: 12px;
+            margin-top: 20px;
+            margin-bottom: 10px;
+        }
+        .color-option {
+            flex: 1;
+            height: 55px;
+            border-radius: 40px;
+            cursor: pointer;
+            border: 3px solid #fff3cf;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+            transition: 0.2s;
+        }
+        .color-option.active {
+            border: 4px solid gold;
+            transform: scale(1.02);
+        }
+        .premium-badge {
+            background: #ffb347;
+            padding: 6px;
+            border-radius: 24px;
+            margin-top: 12px;
+            font-size: 0.85rem;
+            text-align: center;
+            color: #3b2a1f;
+        }
+        .modal-overlay-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.7);
+            backdrop-filter: blur(3px);
+            z-index: 999;
+        }
+        .hidden {
+            display: none;
+        }
+        .success-msg {
+            color: #2b6e2f;
+            background: #e9f5e6;
+            padding: 6px;
+            border-radius: 32px;
+            margin: 8px 0;
+            text-align: center;
+        }
+    </style>
+</head>
+<body dir="rtl">
+
+    <div class="lewa7-body" id="lewa7-body">
+        <div class="lewa7" id="lewa7">
+            <div class="lewa7-container" id="lewa7Container">
+                <h2 class="lewa7-intro">لسم الله الرحمن الرحيم</h2>                
+                <div class="ta7at" id="ta7at">0</div>     
+                <span class="mithal" id="mithal">...</span>
+                <span class="hamesh right"></span>            
+                <span class="hamesh left"></span>              
+                <span class="qid" id="qid">...</span>			
+                <h1 class="elkalamah" id="elkalamah">...</h1>     
+                <div class="abiat" id="abiat"></div>
+                <img class="dmair" id="dmair" src="dmair/1.png">
+                <div class="about-me">
+                    <span>تطوير</span>
+                    <a target="_blank" href="https://fb.com/oldkhatar">الشيخ محمد خطار</a>
+                </div>
+                <div class="btns">
+                    <button class="pairO" id="pair1">...</button>
+                    <button class="pairT" id="pair2">...</button>
+                </div>
+            </div>
+            <div class="lewa7-back">
+                <div class="back-overlay"></div>
+                <div class="message">مرحبا</div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="qr-code">
+        <img src="qr.png" alt="qr">
+    </div>
+    
+    <div class="news-progress">
+        <button id="openPremiumModalBtn">الألوان</button>
+        <div class="marquee">
+            <div class="marquee-content">
+                <b>🎨 ميزة جديدة: غيّر لون لوحك بألوان حصرية عبر بنكيلي 🧾</b>
+            </div>
+        </div>
+    </div>
+
+    <div class="advirtise" style="display: none">
+        <button class="icon" onclick="this.parentElement.style.display='none'">×</button>
+        <div class="ads-container"></div>
+    </div> 
+    
+    <div class="overlay" id="loadOverlay">
+        <div class="load-progress"></div>
+        <div class="label">لسم الله..</div>
+    </div>
+
+    <div class="bsmla">لسم الله الرحمن الرحيم</div>
+
+    <div class="images" id="images">
+        <div class="image" id="image" loading="lazy"></div>
+        <a href="#lewa7-body" class="btn">اللوح &uarr;</a>       
+    </div>     
+
+    <!-- Modal الدفع المدفوع -->
+    <div id="paymentModalOverlay" class="modal-overlay-bg hidden"></div>
+    <div id="paymentModal" class="payment-modal hidden">
+        <div class="modal-header">
+            <h3>✨ ألوان اللوح الفاخرة ✨</h3>
+            <button class="close-modal" id="closeModalBtn">×</button>
+        </div>
+        <div class="payment-info">
+            <div>💰 الدفع عبر <strong>بنكيلي الموريتاني</strong></div>
+            <div class="bank-number">📞 36640872</div>
+            <div style="font-size:0.85rem;">أرسل المبلغ (500 MRU مثلاً) ثم أدخل رقم العملية أو الرمز <strong>36640872</strong></div>
+        </div>
+        <div class="payment-image">
+            <!-- صورة توضيحية (يمكن استبدالها بصورة حقيقية) -->
+            <div class="fake-qr">
+                📱 بنكيلي - أرسل إلى الرقم 36640872<br>
+                🖼️ (صورة الدفع التوضيحية)
+                <div style="background:#fff; border-radius: 12px; margin-top: 8px; padding: 6px;">💳 BANKILY <br> الرقم: 36640872</div>
+            </div>
+        </div>
+        <input type="text" id="paymentCode" class="input-code" placeholder="أدخل رمز التفعيل" autocomplete="off">
+        <button id="verifyPaymentBtn" class="verify-btn">🔓 تفعيل الألوان المميزة</button>
+        <div id="paymentMessage" class="premium-badge" style="margin-top:12px;"></div>
+        
+        <!-- لوحة اختيار الألوان (تظهر بعد التفعيل) -->
+        <div id="colorSelectionArea" style="display: none; margin-top: 18px;">
+            <div style="font-weight:bold; margin-bottom: 8px;">🎨 اختر لون اللوح:</div>
+            <div class="color-palette">
+                <div class="color-option" data-color="#549E91" style="background-color: #549E91;"></div>
+                <div class="color-option" data-color="#D4493C" style="background-color: #D4493C;"></div>
+                <div class="color-option" data-color="#54C866" style="background-color: #54C866;"></div>
+            </div>
+            <div class="premium-badge">✔️ اللون المختار سيُحفظ تلقائياً</div>
+        </div>
+    </div>
+
+    <button id="floatingPremiumBtn" class="premium-btn">🎨 ألوان حصرية</button>
+
+    <script>  
+        // عرض صفحات المصحف (كما هو موجود)
+        for (let i = 0;i < 100;i++) {
+            const page = document.createElement("img");                
+            page.src = `images/page_${i+1}.png`;
+            document.getElementById("image").appendChild(page);
+        }
+    </script>
+    <script src="script.js"></script>
+    
+    <script>
+        // =============== الميزة المدفوعة : تغيير ألوان اللوح ===============
+        (function() {
+            // الألوان المدفوعة المتاحة (ثلاثة ألوان)
+            const premiumColors = ["#549E91", "#D4493C", "#54C866"];
+            // رقم التحقق الثابت (رقم الدفع المطلوب)
+            const PAYMENT_SECRET = "36640872";
+            
+            // حالة التفعيل
+            let isUnlocked = localStorage.getItem("zarag_premium_unlocked") === "true";
+            let currentColor = localStorage.getItem("zarag_premium_color") || null;
+            
+            // العناصر التي سيتم تغيير ألوانها (اللوح والخلفيات)
+            const lewa7Container = document.getElementById("lewa7Container");
+            const lewa7Back = document.querySelector(".lewa7-back");
+            const lewa7Elem = document.getElementById("lewa7");
+            const aboutMe = document.querySelector(".about-me");
+            const btns = document.querySelectorAll(".btns button");
+            const newsDiv = document.querySelector(".news-progress");
+            const mithalSpan = document.querySelector(".mithal");
+            const qidSpan = document.querySelector(".qid");
+            const hameshSpans = document.querySelectorAll(".hamesh");
+            
+            // دالة تطبيق اللون المميز على جميع العناصر ذات الصلة
+            function applyPremiumColor(colorHex) {
+                if (!colorHex || !isUnlocked) return;
+                // تغيير الخلفية الرئيسية للحاوية (اللوح)
+                if (lewa7Container) {
+                    lewa7Container.style.backgroundColor = colorHex;
+                    // تغيير التدرج الداخلي قليلاً
+                    lewa7Container.style.backgroundImage = `radial-gradient(circle at 10% 20%, rgba(255,245,200,0.15), rgba(0,0,0,0.05))`;
+                }
+                if (lewa7Back) {
+                    lewa7Back.style.backgroundColor = colorHex;
+                    lewa7Back.style.backgroundImage = `linear-gradient(${colorHex}cc 5%, transparent 5%), linear-gradient(90deg, ${colorHex}cc 5%, transparent 5%)`;
+                }
+                // تغيير لون العناصر الداخلية (حواف وأزرار)
+                const goldDarkNew = colorHex;
+                if (aboutMe) aboutMe.style.backgroundColor = colorHex;
+                btns.forEach(btn => {
+                    btn.style.backgroundColor = colorHex;
+                });
+                if (newsDiv) newsDiv.style.backgroundColor = colorHex;
+                if (mithalSpan) mithalSpan.style.borderColor = colorHex;
+                if (qidSpan) qidSpan.style.color = colorHex;
+                hameshSpans.forEach(h => {
+                    if (h) h.style.backgroundColor = colorHex;
+                });
+                
+                // تغيير متغيرات CSS (احتياطي)
+                document.documentElement.style.setProperty('--gold-dark', colorHex);
+                document.documentElement.style.setProperty('--gold-main', colorHex);
+                
+                // حفظ اللون المختار
+                localStorage.setItem("zarag_premium_color", colorHex);
+                currentColor = colorHex;
+            }
+            
+            // استعادة اللون عند تحميل الصفحة إذا كان التفعيل ساريًا
+            if (isUnlocked && currentColor && premiumColors.includes(currentColor)) {
+                applyPremiumColor(currentColor);
+            } else if (isUnlocked && !currentColor) {
+                // إذا كان مفعلاً ولكن لم يختر لونًا، نختار الأول افتراضيًا
+                applyPremiumColor(premiumColors[0]);
+            }
+            
+            // وظائف فتح/إغلاق النافذة
+            const modal = document.getElementById("paymentModal");
+            const overlay = document.getElementById("paymentModalOverlay");
+            const openBtn1 = document.getElementById("openPremiumModalBtn");
+            const openBtn2 = document.getElementById("floatingPremiumBtn");
+            const closeBtn = document.getElementById("closeModalBtn");
+            const verifyBtn = document.getElementById("verifyPaymentBtn");
+            const paymentCodeInput = document.getElementById("paymentCode");
+            const paymentMsgDiv = document.getElementById("paymentMessage");
+            const colorArea = document.getElementById("colorSelectionArea");
+            
+            function openModal() {
+                if (modal && overlay) {
+                    modal.classList.remove("hidden");
+                    overlay.classList.remove("hidden");
+                    // تحديث واجهة التفعيل إذا كان مسبقاً مفعلاً
+                    if (isUnlocked) {
+                        paymentMsgDiv.innerHTML = "✅ الميزة مفعلة مسبقاً! يمكنك تغيير اللون من الأسفل.";
+                        colorArea.style.display = "block";
+                        verifyBtn.disabled = true;
+                        verifyBtn.style.opacity = "0.6";
+                        paymentCodeInput.disabled = true;
+                    } else {
+                        paymentMsgDiv.innerHTML = "🔐 أرسل المبلغ إلى الرقم 36640872 عبر بنكيلي، ثم أدخل الرمز 36640872 للتفعيل.";
+                        colorArea.style.display = "none";
+                        verifyBtn.disabled = false;
+                        paymentCodeInput.disabled = false;
+                    }
+                    highlightActiveColor();
+                }
+            }
+            function closeModal() {
+                modal.classList.add("hidden");
+                overlay.classList.add("hidden");
+            }
+            openBtn1?.addEventListener("click", openModal);
+            openBtn2?.addEventListener("click", openModal);
+            closeBtn?.addEventListener("click", closeModal);
+            overlay?.addEventListener("click", closeModal);
+            
+            // التفعيل بالرمز
+            function activatePremium(code) {
+                const trimmed = code.trim();
+                if (trimmed === PAYMENT_SECRET) {
+                    if (!isUnlocked) {
+                        isUnlocked = true;
+                        localStorage.setItem("zarag_premium_unlocked", "true");
+                        paymentMsgDiv.innerHTML = "🎉 تم التفعيل بنجاح! يمكنك الآن اختيار لون اللوح.";
+                        colorArea.style.display = "block";
+                        verifyBtn.disabled = true;
+                        paymentCodeInput.disabled = true;
+                        // إظهار اختيار الألوان
+                        // إذا لم يكن هناك لون مخزن، قم بتطبيق أول لون
+                        if (!currentColor) {
+                            applyPremiumColor(premiumColors[0]);
+                        } else {
+                            applyPremiumColor(currentColor);
+                        }
+                        highlightActiveColor();
+                    } else {
+                        paymentMsgDiv.innerHTML = "⭐ الميزة مفعلة مسبقاً، استمتع بالألوان.";
+                        colorArea.style.display = "block";
+                        verifyBtn.disabled = true;
+                    }
+                } else {
+                    paymentMsgDiv.innerHTML = "❌ رمز التفعيل غير صحيح! تأكد من رقم الدفع 36640872";
+                    setTimeout(() => {
+                        if(paymentMsgDiv.innerHTML.includes("غير صحيح")) 
+                            paymentMsgDiv.innerHTML = "🔐 أدخل الرمز الصحيح (36640872) بعد الدفع.";
+                    }, 2000);
+                }
+            }
+            
+            verifyBtn?.addEventListener("click", () => {
+                const enteredCode = paymentCodeInput.value;
+                if (!enteredCode) {
+                    paymentMsgDiv.innerHTML = "⚠️ الرجاء إدخال رمز التفعيل المستلم من بنكيلي";
+                    return;
+                }
+                activatePremium(enteredCode);
+            });
+            
+            // اختيار اللون من اللوحة
+            function highlightActiveColor() {
+                const activeColor = currentColor || (isUnlocked ? premiumColors[0] : null);
+                document.querySelectorAll(".color-option").forEach(opt => {
+                    const colorVal = opt.getAttribute("data-color");
+                    if (activeColor && colorVal === activeColor) {
+                        opt.classList.add("active");
+                    } else {
+                        opt.classList.remove("active");
+                    }
+                });
+            }
+            
+            function bindColorOptions() {
+                const options = document.querySelectorAll(".color-option");
+                options.forEach(opt => {
+                    opt.addEventListener("click", (e) => {
+                        e.stopPropagation();
+                        if (!isUnlocked) {
+                            paymentMsgDiv.innerHTML = "⚠️ يرجى تفعيل الميزة أولاً عبر الدفع ورمز التفعيل.";
+                            return;
+                        }
+                        const selectedColor = opt.getAttribute("data-color");
+                        if (selectedColor && premiumColors.includes(selectedColor)) {
+                            applyPremiumColor(selectedColor);
+                            highlightActiveColor();
+                            paymentMsgDiv.innerHTML = "✨ تم تغيير لون اللوح بنجاح!";
+                            setTimeout(() => {
+                                if(paymentMsgDiv.innerHTML === "✨ تم تغيير لون اللوح بنجاح!")
+                                    paymentMsgDiv.innerHTML = "🎨 اللون محفوظ، يمكنك تغييره متى شئت.";
+                            }, 1500);
+                        }
+                    });
+                });
+            }
+            
+            // إعادة تهيئة الألوان عند فتح المودال
+            const observer = new MutationObserver(() => {
+                if(modal && !modal.classList.contains("hidden")) {
+                    bindColorOptions();
+                    highlightActiveColor();
+                }
+            });
+            observer.observe(document.body, { childList: true, subtree: false });
+            bindColorOptions();
+            
+            // إضافة دعم إعادة تعيين الألوان إذا قام المستخدم بتحديث يدوي (ضمان بقاء التفعيل)
+            window.addEventListener("load", () => {
+                if(isUnlocked && currentColor) {
+                    applyPremiumColor(currentColor);
+                } else if(isUnlocked && !currentColor) {
+                    applyPremiumColor(premiumColors[0]);
+                }
+                // في حالة عدم وجود تفضيل لكن مفعل من قبل
+                if(isUnlocked && document.querySelector(".lewa7-container").style.backgroundColor === "") {
+                    applyPremiumColor(premiumColors[0]);
+                }
+                bindColorOptions();
+            });
+            
+            // زر إضافي لمرونة عرض الحالة
+        })();
+    </script>
+    <style>
+        /* تحسينات إضافية لتوافق الألوان المدفوعة */
+        .lewa7-container, .lewa7-back {
+            transition: background-color 0.3s ease, background-image 0.2s;
+        }
+        .btns button, .about-me, .news-progress {
+            transition: background-color 0.2s;
+        }
+        .color-option.active {
+            box-shadow: 0 0 0 3px white, 0 0 0 5px #ffc107;
+        }
+        .payment-modal .input-code:focus {
+            outline: none;
+            border-color: #d49b2a;
+        }
+        .premium-btn, #openPremiumModalBtn {
+            background: linear-gradient(135deg, #e6b422, #c9941c);
+            color: #2e241f;
+            font-weight: bold;
+        }
+        #openPremiumModalBtn {
+            background: #ad7a2c;
+            color: #fff7e8;
+        }
+        .marquee-content b {
+            font-size: 0.9rem;
+        }
+    </style>
+    <!-- إضافة معالجة إضافية للحفاظ على الكود القديم سليماً -->
+    <script>
+        // تأكد من عدم تعارض script.js الموجود، ونضيف تحسينات بسيطة لضمان عمل الأزرار
+        if (typeof setupButtons === 'function') {
+            const originalSetup = setupButtons;
+            window.setupButtons = function() {
+                originalSetup();
+                // إضافة حماية للألوان المدفوعة دون إفساد
+            };
+        }
+    </script>
+</body>
+</html>

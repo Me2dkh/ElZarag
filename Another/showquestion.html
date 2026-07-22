@@ -1,0 +1,1050 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ول انگكو</title>
+    <style>
+@font-face {
+    font-family: uthmanic;
+    src: url("uthmanic_warsh_v21.ttf");
+}
+
+/* 🟡 إعدادات عامة */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    scroll-behavior: smooth;
+    direction: rtl;
+    font-family: uthmanic;
+    text-decoration: none;
+    font-size: 17px;
+}
+        
+:root {
+    --white: #f0f0f0;
+    --black: #000;
+
+    --gold-main: rgb(217 190 64);
+    --gold-dark: rgb(168 145 34);
+    --gold-light: rgb(239 228 176);
+
+    --gold-soft: rgb(217 190 64 / 0.2);
+    --gold-shadow: rgb(168 145 34 / 0.2);
+
+    --overlay-dark: rgb(0 0 0 / 0.1);
+
+    --white-soft: rgba(255 255 255 / 0.1);
+    --white-soft-2: rgba(255 255 255 / 0.2);
+
+    --gray-shadow: #aaa;
+
+    --brown-main: #a7634b;
+    --brown-dark: #7d7065;
+
+    --blue-qid: #00f;
+}
+
+body {
+    height: 100vh;
+    background-color: var(--gold-light);
+    background-image: linear-gradient(var(--gold-soft) 5%, transparent 5%) , linear-gradient(90deg, var(--gold-soft) 5%, transparent 5%);
+    background-size: 20px 20px;
+}
+
+h1 {
+	color: var(--gold-dark);
+	font-size: 3em;
+	text-align: center;
+}
+
+.container {
+	display: flex;
+	width: 90%;
+	background-color: #fff;
+	margin: 20px auto;
+	box-shadow: 0 0 20px rgba(0 0 0 / 0.1);
+	border-radius: 20px;
+	padding: 12px;
+	overflow: auto;
+}
+
+.container .col {
+	width: 20%;
+	display: flex;
+	flex-direction: column;
+	border-left: 2px solid #ddd;
+}
+
+.col p {
+	font-size: 1.3em;
+	font-weight: bold;
+	padding: 8px;
+	white-space: nowrap;
+	overflow: auto;
+	border-bottom: 2px solid #ddd;
+}
+
+.col p:nth-child(1) {
+	background-color: var(--gold-dark) !important;
+	color: #fff !important;
+}
+
+.col:nth-child(1) p:nth-child(1) {
+	border-radius: 0 12px 0 0;
+}
+
+.col:nth-child(5) p:nth-child(1) {
+	border-radius: 12px 0 0 0;
+}
+
+.col p:nth-child(odd) {
+	background-color: #f0f0f0;
+}
+
+.col:nth-child(1) p {
+	color: red;
+}
+
+.col:nth-child(2) p {
+	color: blue;
+}
+
+.col:nth-child(4) p {
+	color: red;
+}
+
+.col:nth-child(5) p {
+	color: green;
+}
+
+.col:nth-child(5) {
+	border: 0;
+}
+
+.overlay {
+    backdrop-filter: blur(5px);
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: var(--overlay-dark);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 20;
+}
+
+.load-progress {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    border: 6px solid var(--white-soft);
+    border-left-color: var(--white);
+    border-top-color: var(--white);
+    animation: turn 0.5s linear infinite;
+    position: relative;
+    box-sizing: border-box;
+}
+
+.load-progress::before {
+    content: "";
+    position: absolute;
+    top: 5.5px;
+    right: 11px;
+    width: 6px;
+    height: 6px;
+    background-color: var(--white);
+    border-radius: 50%;
+}
+
+.load-progress::after {
+    content: "";
+    position: absolute;
+    bottom: 5.5px;
+    left: 11px;
+    width: 6px;
+    height: 6px;
+    background-color: var(--white);
+    border-radius: 50%;
+}
+
+@keyframes turn {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+.overlay .label {
+    font-size: 2em;
+    margin-top: 10px;
+    color: var(--white);
+}
+    </style>
+</head>
+<body>
+	<h1>ول انكَكوا</h1>
+	<div class="container">
+		<div class="col">
+			<p>المثال</p>
+		</div>
+		<div class="col">
+			<p>الكلمة</p>
+		</div>
+		<div class="col">
+			<p>التحويل</p>
+		</div>
+		<div class="col">
+			<p>القيد</p>
+		</div>
+		<div class="col">
+			<p>الضمير</p>
+		</div>
+	</div>
+	
+	<div class="overlay" id="loadOverlay">
+        <div class="load-progress"></div>
+        <div class="label">لسم الله..</div>
+    </div>
+	<script>
+let questionsData = []
+let answersData   = []
+let qiyoodData    = []
+let amthilahData  = []
+
+let outputWord = "";
+
+async function fetchLocalJSON(fileName) {
+    try {
+        const response = await fetch(`json/${fileName}`);
+        if (!response.ok) throw new Error(`تعذر تحميل ${fileName}`);
+        const arr = await response.json();
+        return Array.isArray(arr) ? arr : [];
+    } catch (error) {
+        console.error("⚠️ خطأ في تحميل الملف:", error);
+        return [];
+    }
+}
+
+async function loadAllTables() {
+    const merged = await fetchLocalJSON("angko.json");
+
+    questionsData = merged.map(item => item[0]); 
+    answersData   = merged.map(item => item[1]);
+    qiyoodData    = merged.map(item => item[2]);
+    amthilahData  = merged.map(item => item[3]);
+    
+	localStorage.setItem("questions", JSON.stringify(questionsData))
+	localStorage.setItem("answers", JSON.stringify(answersData))
+	localStorage.setItem("qiyood", JSON.stringify(qiyoodData))
+	localStorage.setItem("amthilah", JSON.stringify(amthilahData))
+	
+	
+	
+	amthilahData.forEach((q, i) => {		
+		const item = document.createElement("p");		
+		item.innerHTML = q ? (i + 1) + ". " + q : "&nbsp;"
+		
+		document.querySelector(".col:nth-child(1)").appendChild(item);
+	});
+	
+	questionsData.forEach((q, i) => {		
+		const item = document.createElement("p");		
+		item.textContent = (i + 1) + ". " + q
+		
+		document.querySelector(".col:nth-child(2)").appendChild(item);
+	});
+	
+	questionsData.forEach((q, i) => {		
+		const item = document.createElement("p");		
+		
+		const answer = answersData[i]
+		
+		const newWord = applySpecialRules(q, answer);
+    	if (newWord !== q) {
+        	outputWord = newWord;
+    	} else if (answer === "محذوفة") {
+			const chars = [...q];
+		
+			const lastAlifIndex = chars
+			.map((ch, i) => ch === "ا" && i !== 0 && i !== chars.length - 1 ? i : -1)
+			.filter(i => i !== -1)
+			.pop(); 
+
+			if (lastAlifIndex !== undefined) {
+				chars[lastAlifIndex] = "ٰ";
+				outputWord = chars.join('');
+			}
+		} else if (answer === "محذوفان") {
+			if (q.indexOf("ال") != -1) {
+				outputWord = q.replaceAll("ا", "ٰ").replace("ٰ", "ا")
+			} else {
+				outputWord = q.replaceAll("ا", "ٰ")
+			}
+		} else if (answer === "الأول محذوف") {
+			const chars = [...q];
+
+			const wawIndex = chars.findIndex((ch, i) => ch === "ا" && i !== 0);
+
+			if (wawIndex !== -1) {
+				chars[wawIndex] = "ٰ"; 
+				outputWord = chars.join('');
+			}
+		} else if (answer === "الأول ثابت") {
+			const chars = [...q];
+		
+			const lastAlifIndex = chars
+			.map((ch, i) => ch === "ا" && i !== 0 && i !== chars.length - 1 ? i : -1)
+			.filter(i => i !== -1)
+			.pop(); 
+
+			if (lastAlifIndex !== undefined) {
+				chars[lastAlifIndex] = "ٰ";
+				outputWord = chars.join('');
+			}
+		} else if (answer === "ت") {
+    		const chars = [...q];
+    		const lastIndex = chars.length - 1
+    	
+    		const atahIndexes = chars.map((ch, i) => (ch === "ة" && i != 0) ? i : -1).filter(i => i !== -1);
+    
+    		if (atahIndexes.length > 0) {
+				const lastAttah = atahIndexes.pop();
+			
+				chars[lastAttah] = "ت"
+			
+				outputWord = chars.join('');
+			}
+		} else if (answer === "اللام الثاني") {		
+    		const chars = [...q];
+    		const lastIndex = chars.length - 1
+    	
+    		const atahIndexes = chars.map((ch, i) => (ch === "ل" && i != 0) ? i : -1).filter(i => i !== -1);
+    
+    		if (atahIndexes.length > 0) {
+				const lastAttah = atahIndexes.pop();
+			
+				chars[lastAttah] = ""
+			
+				outputWord = chars.join('');
+			} 
+		} else if (answer === "ء") {
+    		const chars = [...q];
+    		const lastIndex = chars.length - 1
+    	
+    		const atahIndexes = chars.map((ch, i) => (ch === " " && i != 0) ? i : -1).filter(i => i !== -1);
+    
+    		if (atahIndexes.length > 0) {
+				const lastAttah = atahIndexes.pop();
+			
+				chars[lastAttah] = "ءً"
+			
+				outputWord = chars.join('');
+			}
+		} else if (answer === "واو") {
+	    	const chars = [...q];
+  	  	const lastIndex = chars.length - 1;
+
+	    	const alifIndexes = chars.map((ch, i) => (ch === "ا" && i !== 0) ? i : -1).filter(i => i !== -1);
+
+	    	if (alifIndexes.length > 0) {
+			    const lastAlifIndex = alifIndexes.pop(); 
+			    chars[lastAlifIndex] = "وٰ";
+		    	outputWord = chars.join('');
+			}
+		} else if (answer === "النون الأولى") {
+			const chars = [...q];
+		
+			const lastAlifIndex = chars
+				.map((ch, i) => ch === "ن" && i !== 0 && i !== chars.length - 1 ? i : -1)
+				.filter(i => i !== -1)
+				.pop(); // آخر ألف في غير أول وآخر الكلمة
+
+			if (lastAlifIndex !== undefined) {
+				chars[lastAlifIndex] = "";
+				outputWord = chars.join('');
+			}
+		} else if (answer === "النون الثانية") {
+			const chars = [...q];
+		
+			const lastAlifIndex = chars
+				.map((ch, i) => ch === "ن" && i !== 0 && i !== chars.length - 1 ? i : -1)
+				.filter(i => i !== -1)
+				.pop(); // آخر ألف في غير أول وآخر الكلمة
+
+			if (lastAlifIndex !== undefined) {
+				chars[lastAlifIndex] = "";
+				outputWord = chars.join('');
+			}
+		} else if (answer === "الواو الأول") {
+			const chars = [...q];
+
+			const wawIndex = chars.findIndex((ch, i) => ch === "و" && i !== 0);
+			const hamzaIndex = chars.findIndex((ch, i) => ch === "ء" && i !== 0);
+
+			if (wawIndex !== -1) {
+				chars[wawIndex] = "ۥ"; 
+				outputWord = chars.join('');
+			}
+		
+			if (hamzaIndex !== -1) {
+				chars[hamzaIndex] = "ئ"; 
+				outputWord = chars.join('');
+			}
+		} else if (answer === "الواو الثاني") {
+			const chars = [...q];
+			const lastIndex = chars.length - 1;
+			
+			const alifIndexes = chars
+				.map((ch, i) => (ch === "و" && i !== 0) ? i : -1)
+				.filter(i => i !== -1);
+
+			if (alifIndexes.length > 0) {
+				const lastAlifIndex = alifIndexes.pop();
+				chars[lastAlifIndex] = "ۥ";
+				outputWord = chars.join('');
+			}
+		} else if (answer === "ياء") {
+	    	const chars = [...q];
+			let lastYaaIndex = "";
+			const alifTimes = chars.filter(e => e == "ا");
+			const lastAlif = chars.map((ch, i) => ch == "ا" && i == chars.length - 1 ? i : -1);
+			
+			if (alifTimes.length < 2) {
+				lastYaaIndex = chars
+					.map((ch, i) => ch === "ا" && i !== 0 ? i : -1)
+					.filter(i => i !== -1)
+					.pop();
+			} else if (lastAlif != -1) {
+				lastYaaIndex = chars
+					.map((ch, i) => ch === "ا" && i !== 0 ? i : -1)
+					.filter(i => i !== -1)
+					.pop();
+			} else {
+				lastYaaIndex = chars
+					.map((ch, i) => ch === "ا" && i !== 0 && i !== chars.length - 1 ? i : -1)
+					.filter(i => i !== -1)
+					.pop();
+			}
+
+			if (lastYaaIndex !== undefined) {
+				chars[lastYaaIndex] = "ي";
+				outputWord = chars.join('');
+			}
+		} else if (answer === "واو محذوفة") {
+			const chars = [...q];
+			const lastIndex = chars.length - 1;
+
+			const alifIndexes = chars
+				.map((ch, i) => (ch === "و" && i !== 0) ? i : -1)
+				.filter(i => i !== -1);
+
+			if (alifIndexes.length > 0) {
+				const lastAlifIndex = alifIndexes.pop(); // آخر ألف
+				chars[lastAlifIndex] = "ۥ";
+				outputWord = chars.join('');
+			}
+		} else if (answer === "ياء محذوفة") {
+			const chars = [...q];
+			const lastIndex = chars.length - 1;
+
+			const alifIndexes = chars
+				.map((ch, i) => ((ch === "ي" || ch === "ے") && i !== 0) ? i : -1)
+				.filter(i => i !== -1);
+
+			if (alifIndexes.length > 0) {
+				const lastAlifIndex = alifIndexes.pop(); // آخر ألف
+				chars[lastAlifIndex] = "ۦ";
+				outputWord = chars.join('');
+			}
+		} else if (answer === "ياء زائدة") {
+			const chars = [...q];
+			const lastIndex = chars.length - 1;
+
+			const alifIndexes = chars
+				.map((ch, i) => ((ch === "ي" || ch === "ے") && i !== 0) ? i : -1)
+				.filter(i => i !== -1);
+
+			if (alifIndexes.length > 0) {
+				const lastAlifIndex = alifIndexes.pop(); // آخر ألف
+				chars[lastAlifIndex] = "ۦ";
+				outputWord = chars.join('');
+			}
+		} else if (answer === "الياء الأولى") {
+			const chars = [...q];
+		
+			const lastAlifIndex = chars
+				.map((ch, i) => ch === "ي" && i !== 0 && i !== chars.length - 1 ? i : -1)
+				.filter(i => i !== -1)
+				.pop(); 
+
+			if (lastAlifIndex !== undefined) {
+				chars[lastAlifIndex] = "";
+				outputWord = chars.join('');
+			}
+		} else if (answer === "الياء الثانية") {
+			const chars = [...q];
+		
+			const lastAlifIndex = chars
+				.map((ch, i) => ch === "ي" && i !== 0 && i !== chars.length - 1 ? i : -1)
+				.filter(i => i !== -1)
+				.pop(); // آخر ألف في غير أول وآخر الكلمة
+
+			if (lastAlifIndex !== undefined) {
+				chars[lastAlifIndex] = "";
+				outputWord = chars.join('');
+			}
+		} else if (answer === "متصلة") {
+			const chars = [...q];
+		
+			const spaceIndex = chars
+				.map((ch, i) => ch === " " && i !== 0 && i !== chars.length - 1 ? i : -1)
+				.filter(i => i !== -1)
+				.pop();
+		
+			if (spaceIndex !== undefined) {
+				chars[spaceIndex] = "";
+			
+				outputWord = chars.join('');
+			}
+		} else {
+			outputWord = q
+		}
+		
+		item.textContent = outputWord
+		
+		document.querySelector(".col:nth-child(3)").appendChild(item);
+	 });
+	
+	qiyoodData.forEach((q, i) => {		
+		const item = document.createElement("p");		
+		item.innerHTML = q ? (i + 1) + ". " + q : "&nbsp;"
+		
+		document.querySelector(".col:nth-child(4)").appendChild(item);
+	});
+	
+	answersData.forEach(q => {		
+		const item = document.createElement("p");		
+		item.textContent = q
+		
+		document.querySelector(".col:nth-child(5)").appendChild(item);
+	});
+}
+
+function loadProgress() {
+    setTimeout(() => {
+        loadOverlay.style.display = "none";
+    }, 500);
+}
+
+// قواعد التحويل المستخرجة من مدير القواعد
+
+// قواعد التحويل المستخرجة من مدير القواعد
+
+// قواعد التحويل المستخرجة من مدير القواعد
+
+function applySpecialRules(word, chosenWord) {
+    switch(chosenWord) {
+        case "منفصلة":
+            if (word === "امن") return "ام من";
+            if (word === "انشا") return "ان شا";
+            if (word === "وان من") return "وان";
+            if (word === "وان منكم") return "وان";
+            if (word === "ان مكنكم") return "ان";
+            if (word === "ان مكنهم") return "ان";
+            if (word === "ان متعنهم") return "ان";
+            if (word === "وان مسه") return "وان";
+            if (word === "ان تامنه") return "ان";
+            if (word === "ان تخفوا") return "ان";
+            if (word === "ان يعد") return "ان";
+            if (word === "ان يشا") return "ان";
+            if (word === "ان نفعت") return "ان";
+            if (word === "ان عدنا") return "ان";
+            if (word === "ان نشا") return "ان";
+            if (word === "ان نظن") return "ان";
+            if (word === "ان فے") return "ان";
+            if (word === "وان فاتكم") return "وان";
+            if (word === "افاين مت") return "افاين";
+            if (word === "افاين مات") return "افاين";
+            if (word === "ولين متم") return "ولين";
+            if (word === "من نصير") return "من";
+            if (word === "من نكير") return "من";
+            if (word === "من نذير") return "من";
+            if (word === "من نبات") return "من";
+            if (word === "من نفاد") return "من";
+            if (word === "من نور") return "من";
+            if (word === "من نعمة") return "من";
+            if (word === "من مدكر") return "من";
+            if (word === "من موص") return "من";
+            if (word === "من مصيبة") return "من";
+            if (word === "من مضل") return "من";
+            if (word === "من مكرم") return "من";
+            if (word === "من مارج") return "من";
+            if (word === "من ملجا") return "من";
+            if (word === "من مسد") return "من";
+            if (word === "من مشهد") return "من";
+            if (word === "من مني") return "من";
+            if (word === "من مال") return "من";
+            if (word === "من قطمير") return "من";
+            if (word === "من قطران") return "من";
+            if (word === "من سللة") return "من";
+            if (word === "من دون") return "من";
+            if (word === "عن من") return "عن";
+            if (word === "عن منكر") return "عن";
+            if (word === "عن مو عدة") return "عن";
+            if (word === "عن موسي") return "عن";
+            if (word === "عن مواضعه") return "عن";
+            if (word === "عن كهفهم") return "عن";
+            if (word === "عن سياتهم") return "عن";
+            if (word === "ان مع") return "ان";
+            if (word === "فان مع") return "فان";
+            if (word === "وان من") return "وان";
+            if (word === "ان من") return "ان";
+            if (word === "وان منها") return "وان";
+            if (word === "وان منكم") return "وان";
+            if (word === "وان مردنا") return "وان";
+            if (word === "ان ماله") return "ان";
+            if (word === "ان مثل") return "ان";
+            if (word === "ان موعدهم") return "ان";
+            if (word === "ان مرجعهم") return "ان";
+            if (word === "ان مفاتحه") return "ان";
+            if (word === "ان هذا") return "ان";
+            if (word === "وان لكم") return "وان";
+            if (word === "ان عبادے") return "ان";
+            if (word === "ام بعيد") return "ام";
+            if (word === "ام بظهر") return "ام";
+            if (word === "ام به") return "ام";
+            if (word === "ام للانسن") return "ام";
+            if (word === "ام زاغت") return "ام";
+            if (word === "ام خلقوا") return "ام";
+            if (word === "ام حسب") return "ام";
+            if (word === "كل اتوه") return "كل";
+            if (word === "وكل انسن") return "وكل";
+            if (word === "كل فے") return "كل";
+            if (word === "كل ذے") return "كل";
+            if (word === "كل شے") return "كل";
+            if (word === "ولكل درجت") return "ولكل";
+            if (word === "ولكل وجهة") return "ولكل";
+            if (word === "فے مسكنهم") return "فے";
+            if (word === "فے مقعد") return "فے";
+            if (word === "فے ناديكم") return "فے";
+            if (word === "فے مواطن") return "فے";
+            if (word === "فے بطونهم") return "فے";
+            if (word === "انما") return "ان ما";
+            if (word === "عما") return "عن ما";
+            if (word === "بناتيهن") return "بناتے هن";
+            if (word === "ابن ام") return "ابن";
+            if (word === "فمال هوﻻ") return "فمال";
+            if (word === "لكيلا") return "لكي";
+            if (word === "كيلا") return "كي";
+            if (word === "ان ادوا") return "ان";
+            if (word === "ان اسلموا") return "ان";
+            if (word === "ان انكحك") return "ان";
+            if (word === "ان ابدله") return "ان";
+            if (word === "انمسني") return "ان";
+            if (word === "اين شركاي") return "اين";
+            if (word === "فاين تذهبون") return "فاين";
+            if (word === "اين المفر") return "اين";
+            if (word === "اي منقلب") return "اي";
+            if (word === "فاي ايت") return "فاي";
+            if (word === "اي الفريقين") return "اي";
+            if (word === "اي الحزبين") return "اي";
+            if (word === "لاي يوم") return "لاي";
+            if (word === "اي شي") return "اي";
+            if (word === "فبيس مثوي") return "فبيس";
+            if (word === "وبيس المصير") return "وبيس";
+            if (word === "كي تقر") return "كي";
+            if (word === "كي نسبحك") return "كي";
+            if (word === "غضبواهم") return "غضبوا";
+            if (word === "هلهن") return "هل";
+            if (word === "كفرواهم") return "كفروا";
+            if (word === "بلهم") return "بل";
+            if (word === "فكهونهم") return "فكهون";
+            if (word === "كانواهم") return "كانوا";
+            if (word === "اوليكهم") return "اوليك";
+            if (word === "ثمهم") return "ثم";
+            if (word === "يومهم") return "يوم";
+            if (word === "اينما") return "اين";
+            if (word === "مال الله") return "مال";
+            if (word === "فمال هوﻻ") return "فمال";
+            if (word === "فمال الذين") return "فمال";
+            if (word === "مال هذا") return "مال";
+            if (word === "كيلا") return "كي";
+            if (word === "لكيلا") return "لكي";
+            if (word === "انتقع") return "ان";
+            if (word === "انتتكبر") return "ان";
+            if (word === "انتبتغي") return "ان";
+            if (word === "انتاتيهم") return "ان";
+            if (word === "انبورك") return "ان";
+            if (word === "انراه") return "ان";
+            if (word === "انرا") return "ان";
+            if (word === "اننمن") return "ان";
+            if (word === "اننطمس") return "ان";
+            if (word === "اننزغ") return "ان";
+            if (word === "انمن") return "ان";
+            if (word === "انلعنت") return "ان";
+            if (word === "وانليس") return "وان";
+            if (word === "ان ادوا") return "ان";
+            if (word === "ان اسلموا") return "ان";
+            if (word === "انمسني") return "ان";
+            if (word === "وانلو") return "وان";
+            if (word === "انلو") return "ان";
+            if (word === "انصدوكم") return "ان";
+            if (word === "انسبحوا") return "ان";
+            if (word === "انصبرنا") return "ان";
+            if (word === "انقد") return "ان";
+            if (word === "انهدينا") return "ان";
+            if (word === "انجا كم") return "ان";
+            if (word === "انكذب") return "ان";
+            if (word === "انكتب") return "ان";
+            if (word === "انسخط") return "ان";
+            if (word === "انغضب") return "ان";
+            if (word === "ان شا") return "ان";
+            if (word === "ان شا") return "ان";
+            if (word === "ان مكنكم") return "ان";
+            if (word === "افاين مات") return "افاين";
+            if (word === "ان انت") return "ان";
+            if (word === "فان امنوا") return "فان";
+            if (word === "فان انستم") return "فان";
+            if (word === "فان احصرتم") return "فان";
+            if (word === "فان استكبروا") return "فان";
+            if (word === "ان الكفرون") return "ان";
+            if (word === "مما") return "من";
+            if (word === "عن سياتهم") return "عن";
+            if (word === "فاي ايت") return "فاي";
+            if (word === "قل ﻻ") return "قل";
+            if (word === "قل تمتع") return "قل";
+            if (word === "قل تمتعوا") return "قل";
+            if (word === "قل تعالوا") return "قل";
+            if (word === "قل تربصوا") return "قل";
+            if (word === "قل نعم") return "قل";
+            if (word === "قل نزله") return "قل";
+            if (word === "قل نار") return "قل";
+            if (word === "قلنا ينار") return "قلنا";
+            if (word === "وقلنا لهم") return "وقلنا";
+            if (word === "وقلنا يادم") return "وقلنا";
+            if (word === "وقلن حش") return "وقلن";
+            if (word === "وقلن قوﻻ") return "وقلن";
+            if (word === "معي صبرا") return "معي";
+            if (word === "معي عدوا") return "معي";
+            if (word === "معي عدوا") return "معي";
+            if (word === "معي ربي") return "معي";
+            if (word === "معي ربي") return "معي";
+            if (word === "معي بني") return "معي";
+            if (word === "معي ردا") return "معي";
+            if (word === "فاخلع نعليك") return "فاخلع";
+            if (word === "ادفع بالتي") return "ادفع";
+            if (word === "هيت لك") return "هيت";
+            if (word === "او تيت سولك") return "اوتيت";
+            if (word === "هاوم اقر وا") return "هاوم";
+            if (word === "فبهديهم اقتده") return "فبهديهم";
+            if (word === "اليهم اثنين") return "اليهم";
+            if (word === "لنت لهم") return "لنت";
+            if (word === "اذنت لهم") return "اذنت";
+            if (word === "الم اعهد") return "الم";
+            if (word === "الم اعهد") return "الم";
+            if (word === "الم اقل") return "الم";
+            if (word === "اولم يكف") return "اولم";
+            if (word === "لم يكن") return "لم";
+            if (word === "من راق") return "من";
+            if (word === "ومن يقنت") return "ومن";
+            if (word === "ومن كان") return "ومن";
+            if (word === "ومن شكر") return "ومن";
+            if (word === "ان تامنه") return "ان";
+            if (word === "ولمن صبر") return "ولمن";
+            if (word === "لمن ليبطين") return "لمن";
+            if (word === "بمن ضل") return "بمن";
+            if (word === "بمن هو") return "بمن";
+            if (word === "بمن جا") return "بمن";
+            if (word === "امن ان") return "امن";
+            if (word === "ذق انك") return "ذق";
+            if (word === "واذنتقنا") return "واذ";
+            if (word === "اذنفشت") return "اذ";
+            if (word === "اذنسويكم") return "اذ";
+            if (word === "واذالقوا") return "واذا";
+            if (word === "اذالهم") return "اذا";
+            if (word === "واذا ما") return "واذا";
+            if (word === "اذ انبعث") return "اذ";
+            if (word === "واذاعتزلموهم") return "واذ";
+            if (word === "وحيث ما") return "وحيث";
+            if (word === "مثل ما") return "مثل";
+            if (word === "نصف ما") return "نصف";
+            if (word === "تقف ما") return "تقف";
+            if (word === "عنه ماله") return "عنه";
+            if (word === "عليه ما") return "عليه";
+            if (word === "ولو كنت") return "ولو";
+            if (word === "ولوان") return "ولو";
+            if (word === "ولويعجل") return "ولو";
+            if (word === "ولو بسط") return "ولو";
+            if (word === "فلوﻻ") return "فلو";
+            if (word === "فلااقتحم") return "فلا";
+            if (word === "فلاوربك") return "فلا";
+            if (word === "فلاكفران") return "فلا";
+            if (word === "فلاعدوان") return "فلا";
+            if (word === "فلاتنتصران") return "فلا";
+            if (word === "بابل هاروت") return "بابل";
+            if (word === "ابابيل ترميهم") return "ابابيل";
+            if (word === "وقبايل لتعارفوا") return "وقبايل";
+            if (word === "سربيل تقيكم") return "سربيل";
+            if (word === "كم تركوا") return "كم";
+            if (word === "وكم قصمنا") return "وكم";
+            if (word === "كم لبثتم") return "كم";
+            if (word === "ذي ثلث") return "ذي";
+            if (word === "ذي ظفر") return "ذي";
+            if (word === "ذي عوج") return "ذي";
+            if (word === "ذامقربة") return "ذا";
+            if (word === "ذامتربة") return "ذا";
+            if (word === "لذومغفرة") return "لذو";
+            if (word === "وذوعقاب") return "وذو";
+            if (word === "فذودعا") return "فذو";
+            if (word === "ومن يوق") return "ومن";
+            if (word === "ومن يوت") return "ومن";
+            if (word === "ذواتي اكل") return "ذواتي";
+            if (word === "لومةﻻيم") return "لومة";
+            if (word === "صنعة لبوس") return "صنعة";
+            if (word === "الكعبة البيت") return "الكعبة";
+            if (word === "اقوم قيلا") return "اقوم";
+            if (word === "اقوم ويبشر") return "اقوم";
+            if (word === "واقوم ولكن") return "واقوم";
+            if (word === "واقوم للشهدة") return "واقوم";
+            if (word === "والذان ياتينها") return "والذان";
+            if (word === "اولي لك") return "اولي";
+            if (word === "اوصي بها") return "اوصي";
+            if (word === "واوحي ربك") return "واوحي";
+            if (word === "وسعي فے") return "وسعي";
+            if (word === "دنا فتدلي") return "دنا";
+            if (word === "سنا برقه") return "سنا";
+            if (word === "ابني ادم") return "ابني";
+            if (word === "يدي نجويكم") return "يدي";
+            if (word === "ذوي عدل") return "ذوي";
+            if (word === "مس سقر") return "مس";
+            if (word === "مس الناس") return "مس";
+            if (word === "مس الانسن") return "مس";
+            if (word === "وفارالتنور") return "وفار";
+            if (word === "وسارباهله") return "وسار";
+            if (word === "نارجهنم") return "نار";
+            if (word === "دارالبوار") return "دار";
+            if (word === "فك رقبة") return "فك";
+            if (word === "جدربنا") return "جد";
+            if (word === "الدالخصام") return "الد";
+            if (word === "الا ن يجد") return "الان";
+            if (word === "فالن بشروهن") return "فالن";
+            if (word === "ذق انك") return "ذق";
+            if (word === "وارزق اهله") return "وارزق";
+            if (word === "لما ليوفينهم") return "لما";
+            if (word === "لمن ليبطين") return "لمن";
+            if (word === "البقرتشبه") return "البقر";
+            if (word === "وال ابرهيم") return "وال";
+            if (word === "وال عمرن") return "وال";
+            if (word === "ال لوط") return "ال";
+            if (word === "ال فرعون") return "ال";
+            if (word === "ال ياسين") return "ال";
+            if (word === "ال يعقوب") return "ال";
+            if (word === "ال موسي") return "ال";
+            if (word === "وال هرون") return "وال";
+            if (word === "فاتت اكلها") return "فاتت";
+            if (word === "قالت اخريهم") return "قالت";
+            if (word === "صرفت ابصرهم") return "صرفت";
+            if (word === "ودع اذيهم") return "ودع";
+            if (word === "تطع اكثر") return "تطع";
+            if (word === "ارجع اليهم") return "ارجع";
+            if (word === "تعالوااتل") return "تعالوا";
+            if (word === "واتقوااجر") return "واتقوا";
+            if (word === "ونادوا اصحب") return "ونادوا";
+            if (word === "ولات حين") return "ولات";
+            if (word === "ولاتمنن") return "ولا";
+            if (word === "ولاتحنث") return "ولا";
+            if (word === "لاتحزن") return "لا";
+            if (word === "غرهولا") return "غر";
+            if (word === "دابرهوﻻ") return "دابر";
+            if (word === "متعت هوﻻ") return "متعت";
+            if (word === "ان هوﻻ") return "ان";
+            if (word === "قواانفسكم") return "قوا";
+            if (word === "تحلقوا ر وسكم") return "تحلقوا";
+            if (word === "وذوقوا عذاب") return "وذوقوا";
+            if (word === "خلقوا كخلقه") return "خلقوا";
+            if (word === "شقوا ففي") return "شقوا";
+            if (word === "سعدواففي") return "سعدوا";
+            if (word === "مشوا فيه") return "مشوا";
+            if (word === "اتوا وقلوبهم") return "اتوا";
+            if (word === "اووا ونصروا") return "اووا";
+            if (word === "تولوا واعينهم") return "تولوا";
+            if (word === "بنوا ريبة") return "بنوا";
+            if (word === "اشكوا بثي") return "اشكوا";
+            if (word === "بم يرجع") return "بم";
+            if (word === "فبم تبشرون") return "فبم";
+            if (word === "فليستجيبوا لي") return "فليستجيبوا";
+            if (word === "اشرح لي") return "اشرح";
+            if (word === "هب لي") return "هب";
+            if (word === "هب لي") return "هب";
+            if (word === "ويسرلي") return "ويسر";
+            if (word === "واجعل لي") return "واجعل";
+            if (word === "ياذن لي") return "ياذن";
+            if (word === "ولي دين") return "ولي";
+            if (word === "ولي فيها") return "ولي";
+            if (word === "ليس بي") return "ليس";
+            if (word === "تشمت بي") return "تشمت";
+            if (word === "احسن بي") return "احسن";
+            if (word === "وليومنوا بي") return "وليومنوا";
+            if (word === "اجعل لنا") return "اجعل";
+            if (word === "واكتب لنا") return "واكتب";
+            if (word === "اجلت لنا") return "اجلت";
+            if (word === "عجل لنا") return "عجل";
+            if (word === "ييسن من") return "من";
+            if (word === "وانت حل") return "وانت";
+            if (word === "لاهن حل") return "لاهن";
+            if (word === "ذات العماد") return "ذات";
+            if (word === "ذات لهب") return "ذات";
+            if (word === "ذات الاكمام") return "ذات";
+            if (word === "لم تلبسون") return "لم";
+            if (word === "لم حشرتني") return "لم";
+            if (word === "لم توذونني") return "لم";
+            if (word === "سول لهم") return "سول";
+            if (word === "وقال لهم") return "وقال";
+            if (word === "الي هوﻻ") return "الي";
+            if (word === "الي ربك") return "الي";
+            if (word === "الف سنة") return "الف";
+            if (word === "الف شهر") return "الف";
+            if (word === "والفيا سيدها") return "والفيا";
+            if (word === "اتيا اهل") return "اتيا";
+            if (word === "فاتيا فرعون") return "فاتيا";
+            if (word === "ابي يات") return "ابي";
+            if (word === "خلا فيها") return "خلا";
+            if (word === "فادلي دلوه") return "فادلي";
+            if (word === "وكفے بالله") return "وكفي";
+            if (word === "كفي بنفسك") return "كفي";
+            if (word === "كفي بنا") return "كفي";
+            if (word === "اليه يصعد") return "اليه";
+            if (word === "اليه يرد") return "اليه";
+            if (word === "هل امنكم") return "هل";
+            if (word === "هل لكم") return "هل";
+            if (word === "هل انتم") return "هل";
+            if (word === "هل انبيكم") return "هل";
+            if (word === "بل لجوا") return "بل";
+            if (word === "بل لما") return "بل";
+            if (word === "بل ظننتم") return "بل";
+            if (word === "بل ضلوا") return "بل";
+            if (word === "جعلاله") return "جعلا";
+            if (word === "جعل لكم") return "جعل";
+            if (word === "فقولاله") return "فقولا";
+            if (word === "كلا لينبذن") return "كلا";
+            if (word === "كلالا") return "كلا";
+            if (word === "متي هو") return "متي";
+            if (word === "متي هذا") return "متي";
+            if (word === "متي نصر") return "متي";
+            if (word === "اسكن انت") return "اسكن";
+            if (word === "فاذهب انت") return "فاذهب";
+            if (word === "ان انت") return "ان";
+            if (word === "ام انت") return "ام";
+            if (word === "ومنادون") return "ومنا";
+            if (word === "الادني دون") return "الادني";
+            if (word === "دون ذلك") return "دون";
+            if (word === "يكف برك") return "يكف";
+            if (word === "وليملل الذے") return "وليملل";
+            if (word === "يضلل الله") return "يضلل";
+            if (word === "ياتل اولوا") return "ياتل";
+            if (word === "تخف انك") return "تخف";
+            if (word === "تخف اني") return "تخف";
+            if (word === "فسوا") return "فسوى";
+            if (word === "غضبواهم") return "غضبوا";
+            if (word === "مال الله") return "مال";
+            if (word === "سل بنے") return "سل";
+            if (word === "لكيلا") return "لكے";
+            if (word === "كيلا") return "كے";
+            if (word === "الذينهم") return "الذين";
+            if (word === "الفردوسهم") return "الفردوس";
+            if (word === "وبالنجمهم") return "وبالنجم";
+            if (word === "البغيهم") return "البغي";
+            if (word === "والكفرونهم") return "والكفرون";
+            if (word === "وبالاخرتهم") return "وبلاخرة";
+            if (word === "الذيهم") return "الذے";
+            if (word === "امهم") return "ام";
+            if (word === "انهم") return "ان";
+            if (word === "وانهم") return "وان";
+            if (word === "وانكن") return "وان";
+            if (word === "وانكنا") return "وان";
+            if (word === "بلهم") return "بل";
+            if (word === "فكهونهم") return "فكهون";
+            if (word === "اوليكهم") return "اوليك";
+            if (word === "ثمهم") return "ثم";
+            if (word === "يومهم") return "يوم";
+            if (word === "اينما") return "اين";
+            if (word === "انتقع") return "ان";
+            if (word === "انتتكبر") return "ان";
+            if (word === "انتبيد") return "ان";
+            if (word === "انتبتغي") return "ان";
+            if (word === "انتاتيهم") return "ان";
+            if (word === "انبورك") return "ان";
+            if (word === "انراه") return "ان";
+            if (word === "انرا") return "ان";
+            if (word === "اننمن") return "ان";
+            if (word === "اننطمس") return "ان";
+            if (word === "اننزغ") return "ان";
+            if (word === "انمن") return "ان";
+            if (word === "انلعنت") return "ان";
+            if (word === "وانليس") return "وان";
+            if (word === "انمسني") return "ان";
+            if (word === "وانلو") return "وان";
+            if (word === "انلو") return "ان";
+            if (word === "انصدوكم") return "ان";
+            if (word === "انسبحوا") return "ان";
+            if (word === "انسيكون") return "ان";
+            if (word === "انصبرنا") return "ان";
+            if (word === "انجا كم") return "ان";
+            if (word === "انكذب") return "ان";
+            if (word === "انكتب") return "ان";
+            if (word === "انسخط") return "ان";
+            if (word === "انغضب") return "ان";
+            if (word === "فبيسما") return "فبيس";
+            if (word === "عنما") return "عن";
+            if (word === "مما") return "من";
+            if (word === "فمما") return "فمن";
+            if (word === "كلما") return "كل";
+            if (word === "مال الله") return "مال";
+            break;
+        case "متصلة":
+            if (word === "ا لا") return "الا";
+            break;
+        case "محذوفة":
+            if (word === "ا منتم") return "اامنتم";
+            if (word === "ا لهتنا") return "االهتنا";
+            if (word === "وا للا") return "والے";
+            if (word === "اللاتے") return "التے";
+            if (word === "بلا") return "بلوا";
+            if (word === "يابراهيم") return "يابرهيم";
+            if (word === "قرانا") return "قرنا";
+            break;
+        case "اللام الثاني":
+            if (word === "الليل") return "اليل";
+            if (word === "للله") return "لله";
+            break;
+        case "واو":
+            if (word === "ساريكم") return "ساوريكم";
+            if (word === "الوا") return "اولوا";
+            if (word === "الے") return "اولے";
+            if (word === "الا") return "اولا";
+            if (word === "اليك") return "اوليك";
+            if (word === "والت") return "واولت";
+            break;
+        case "ياء":
+            if (word === "فاراه") return "فاريه";
+            if (word === "راا") return "راي";
+            break;
+        case "محذوفان":
+            if (word === "خطايانا") return "خطٰيٰنا";
+            break;
+        default:
+            break;
+    }
+    return word;
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+    loadAllTables();
+    loadProgress();
+});
+	</script>
+</body>
+</html>

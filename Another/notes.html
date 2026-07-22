@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<title>ملاحظات الزرك</title>
+<style>
+@font-face {
+    font-family: uthmanic;
+    src: url("uthmanic_warsh_v21.ttf");
+}    
+    
+:root {
+    --white: #f0f0f0;
+    --black: #000;
+
+    --gold-main: rgb(217 190 64);
+    --gold-dark: rgb(168 145 34);
+    --gold-light: rgb(239 228 176);
+
+    --gold-soft: rgb(217 190 64 / 0.2);
+    --gold-shadow: rgb(168 145 34 / 0.2);
+
+    --overlay-dark: rgb(0 0 0 / 0.1);
+
+    --white-soft: rgba(255 255 255 / 0.1);
+    --white-soft-2: rgba(255 255 255 / 0.2);
+
+    --gray-shadow: #aaa;
+
+    --brown-main: #a7634b;
+    --brown-dark: #7d7065;
+
+    --blue-qid: #00f;
+}
+
+* {
+    font-family: uthmanic;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    direction: rtl;
+    background-color: var(--gold-light);
+    background-image: linear-gradient(var(--gold-soft) 5%, transparent 5%) , linear-gradient(90deg, var(--gold-soft) 5%, transparent 5%);
+    background-size: 20px 20px;
+    padding: 20px;
+    height: 100vh;
+    font-size: 18px;
+}
+
+.bsmla {
+    position: absolute;
+    top: 20%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
+    text-align: center;
+    font-size: 5em;
+    font-weight: normal;
+    color: var(--gold-main);
+    text-shadow:
+        1px 0 0 var(--gold-light),
+        -1px 0 0 var(--gold-light),
+        0 1px 0 var(--gold-light),
+        0 -1px 0 var(--gold-light);
+    opacity: 0.2;
+    overflow: hidden;
+    text-wrap: nowrap;
+    z-index: -1
+}
+
+.container {
+    max-width: 400px;
+    margin: auto;
+    background-color: var(--gold-main);
+    padding: 15px;
+    border-radius: 8px;
+}
+
+.container h2 {
+    color: var(--white)
+}
+
+input, select {
+    border: 2px solid var(--gold-dark);
+    background-color: var(--gold-light);
+}
+
+input, select, button {
+    width: 100%;
+    padding: 8px;
+    margin-top: 8px;
+    border-radius: 4px;
+}
+
+button {
+    background: var(--gold-dark);
+    color: #fff;
+    border: none;
+    cursor: pointer;
+	font-weight: bold;
+}
+
+.note {
+    background: #eee;
+    padding: 8px;
+    margin-top: 6px;
+    border-radius: 4px;
+	position: relative;
+}
+
+.note small {
+    color: #555;
+}
+
+.note span {
+	color: var(--gold-dark);
+	position: absolute;
+	top: 6px;
+	left: 8px;
+	font-size: 30px;
+	font-weight: bold;
+	cursor: pointer;
+	width: 24px;
+	height: 24px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	border-radius: 50%;
+	transition: 0.2s;
+}
+
+.note span:hover {
+	background-color: var(--gold-dark);
+	color: white;
+}
+</style>
+</head>
+<body>
+<h1 class="bsmla">لسم الله الرحمن الرحيم</h1>
+
+<div class="container">
+    
+    <h2>ملاحظات الزركَ</h2>
+
+    <input list="elkalmah-option" id="elkalmah" placeholder="اكتب الكلمة">
+    <datalist id="elkalmah-option"></datalist>
+
+    <select id="dameer"></select>
+	
+    <select id="qayd">
+	      	<option>لايوجد قيد</option>
+	</select>
+
+	<input list="mithal-option" id="mithal" placeholder="اكتب مثال">
+    <datalist id="mithal-option"></datalist>
+     
+    <button onclick="saveNote()">حفظ</button>
+
+    <div id="notes"></div>
+</div>
+
+<script>
+
+const answerPairs = [
+    "محذوفة", "ثابتة",
+    "محذوفان", "ثابتان",
+    "الأول محذوف", "الأول ثابت",
+    "ألف", "ياء",
+    "نون", "غير نون",
+    "واو", "واو محذوفة",
+    "النون الأولى", "النون الثانية",
+    "ياء ثابتة", "ياء محذوفة",
+    "ل", "الا",
+    "ياء زائدة", "بلا ياء",
+    "الواو الأول", "الواو الثاني",
+    "نقل", "وصل",
+    "متصلة", "منفصلة",
+    "اللام الأول", "اللام الثاني",
+    "ة", "ت",
+    "ء", "أ",
+    "ؤ", "ئ",
+    "للا", "ال",
+    "وا", "ى",
+    "الف المزيد", "ياء مردودة",
+    "الياء الأولى", "الياء الثانية",
+    "ألف واو", "ألف ياء",
+    "نون", "مافيها شي"
+];
+
+const dameerSelect = document.getElementById("dameer");
+const qaydSelect   = document.getElementById("qayd");
+const mithalDataList = document.getElementById("mithal-option");
+
+answerPairs.forEach(d => {
+    const opt = document.createElement("option");
+    opt.value = d;
+    opt.textContent = d;
+    dameerSelect.appendChild(opt);
+});
+
+let questionsData = [];
+let qiyoodData = [];
+let amthilahData = [];
+
+async function loadAllTables() {
+    const merged = await fetchLocalJSON("angko.json");
+    
+    questionsData = merged.map(item => item[0]);
+    qiyoodData    = merged.map(item => item[2]);
+    amthilahData  = merged.map(item => item[3]);
+	
+	while (qaydSelect.options.length > 1) {
+		qaydSelect.remove(1);
+	}
+	while (mithalDataList.options.length > 0) {
+		mithalDataList.remove(0);
+	}
+	
+	questionsData.forEach((q, index) => {
+		if (!q) return;
+		const opt = document.createElement("option");
+		opt.value = q;
+		opt.textContent = `${index + 1}. ${q}`;
+		document.getElementById("elkalmah-option").appendChild(opt);
+	});
+	
+	qiyoodData.forEach((q, index) => {
+		if (!q) return;
+		const opt = document.createElement("option");
+		opt.value = q;
+		opt.textContent = `${index + 1}. ${q}`;
+		qaydSelect.appendChild(opt);
+	});
+	
+	amthilahData.forEach((m, index) => {
+		if (!m) return;
+		const opt = document.createElement("option");
+		opt.value = m;
+		opt.textContent = `${index + 1}. ${m}`;
+		mithalDataList.appendChild(opt);
+	});
+}
+
+async function fetchLocalJSON(fileName) {
+    try {
+        const response = await fetch(`json/${fileName}`);
+        if (!response.ok) throw new Error(`تعذر تحميل ${fileName}`);
+        const arr = await response.json();
+        return Array.isArray(arr) ? arr : [];
+    } catch (error) {
+        console.error("⚠️ خطأ في تحميل الملف:", error);
+        return [];
+    }
+}
+
+function saveNote() {
+    const elkalmah = document.getElementById("elkalmah").value.trim();
+    const dameer   = dameerSelect.value;
+    const qayd     = qaydSelect.value;
+    const mithal   = document.getElementById("mithal").value.trim();
+
+    if (!elkalmah) return alert("اكتب الكلمة");
+
+    const notes = JSON.parse(localStorage.getItem("zarkNotes") || "[]");
+
+    notes.push({ elkalmah, dameer, qayd, mithal });
+
+    localStorage.setItem("zarkNotes", JSON.stringify(notes));
+
+    document.getElementById("elkalmah").value = "";
+    document.getElementById("mithal").value = "";
+    renderNotes();
+}
+
+function deleteNote(index) {
+    const notes = JSON.parse(localStorage.getItem("zarkNotes") || "[]");
+    notes.splice(index, 1);
+    localStorage.setItem("zarkNotes", JSON.stringify(notes));
+    renderNotes();
+}
+
+function renderNotes() {
+    const notesDiv = document.getElementById("notes");
+    notesDiv.innerHTML = "";
+
+    const notes = JSON.parse(localStorage.getItem("zarkNotes") || "[]");
+
+    notes.forEach((n, index) => {
+        const div = document.createElement("div");
+        div.className = "note";
+        div.innerHTML = `
+            <strong>${n.elkalmah}</strong>
+            <br>
+            <small>الضمير: ${n.dameer}</small>
+            <br>
+            <small>القيد:  ${n.qayd}</small>
+            <br>
+            <small>المثال: ${n.mithal}</small>
+            <span onclick="deleteNote(${index})">×</span>
+        `;
+        notesDiv.appendChild(div);
+    });
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+    loadAllTables();
+    renderNotes();
+});
+
+</script>
+</body>
+</html>

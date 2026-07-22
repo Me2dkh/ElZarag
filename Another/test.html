@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=yes">
+    <title>فَرْشُ الحُرُوف | مستكشف الرسم القرآني</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background: #f3efE4;
+            font-family: 'Segoe UI', 'Amiri', 'Tahoma', 'Noto Sans Arabic', system-ui, sans-serif;
+            color: #2d2b26;
+            padding: 12px;
+        }
+
+        .app-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: #fffef7;
+            border-radius: 32px;
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+            border: 1px solid #e8e0d2;
+        }
+
+        /* الهيدر */
+        .header {
+            background: #2c4a33;
+            padding: 1.2rem 1rem;
+            color: #fff3e0;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 1.8rem;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .header h1 span:first-child {
+            background: #e2b56a;
+            padding: 4px 14px;
+            border-radius: 60px;
+            font-size: 1.3rem;
+            color: #1f3b2c;
+        }
+
+        .sub {
+            font-size: 0.85rem;
+            margin-top: 6px;
+            opacity: 0.85;
+        }
+
+        /* أدوات التحكم – تصميم مناسب للمس */
+        .controls {
+            padding: 1rem;
+            background: #fefaf2;
+            border-bottom: 1px solid #ede3d4;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            align-items: center;
+        }
+
+        .search-box {
+            flex: 3;
+            min-width: 180px;
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .search-box input {
+            flex: 2;
+            padding: 12px 18px;
+            border-radius: 50px;
+            border: 1px solid #d9cdb5;
+            background: white;
+            font-family: inherit;
+            font-size: 0.95rem;
+            transition: 0.2s;
+        }
+
+        .search-box input:focus {
+            border-color: #b97f46;
+            box-shadow: 0 0 0 3px rgba(185, 127, 70, 0.2);
+            outline: none;
+        }
+
+        .filter-select {
+            padding: 12px 18px;
+            border-radius: 50px;
+            background: white;
+            border: 1px solid #d9cdb5;
+            font-weight: 500;
+            cursor: pointer;
+            font-family: inherit;
+        }
+
+        .clear-btn {
+            background: #ede3d4;
+            border: none;
+            padding: 0 20px;
+            border-radius: 40px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.2s;
+            font-size: 0.9rem;
+        }
+
+        .clear-btn:active { background: #d6c7b2; }
+
+        .stats {
+            background: #e9e1d3;
+            padding: 6px 16px;
+            border-radius: 40px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            white-space: nowrap;
+        }
+
+        /* الجدول مع تمرير أفقي سلس */
+        .table-wrapper {
+            overflow-x: auto;
+            padding: 0 12px 12px 12px;
+            scroll-behavior: smooth;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .data-table {
+            width: 100%;
+            min-width: 620px;
+            border-collapse: collapse;
+            font-size: 0.85rem;
+            background: white;
+            border-radius: 24px;
+            overflow: hidden;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.03);
+        }
+
+        .data-table th {
+            background: #345f3e;
+            color: #fff7ea;
+            padding: 14px 8px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            text-align: center;
+        }
+
+        .data-table td {
+            padding: 12px 8px;
+            border-bottom: 1px solid #f0e7db;
+            vertical-align: middle;
+            word-break: break-word;
+        }
+
+        .keyword-cell {
+            font-weight: 800;
+            color: #a5672f;
+            background: #fff6ed;
+            font-size: 1rem;
+            border-radius: 20px;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 5px 12px;
+            border-radius: 40px;
+            font-size: 0.7rem;
+            font-weight: bold;
+            background: #eeebdf;
+        }
+
+        .status-thabit { background: #deedd3; color: #27634b; border-right: 3px solid #548c3a; }
+        .status-mahdhoof { background: #ffe2cf; color: #bb582b; border-right: 3px solid #e28542; }
+
+        .ayah-snippet {
+            font-size: 0.8rem;
+            line-height: 1.45;
+            background: #fbf7ef;
+            padding: 6px 10px;
+            border-radius: 20px;
+            display: inline-block;
+            max-width: 300px;
+        }
+
+        .extra-info {
+            font-size: 0.7rem;
+            color: #8f7a5e;
+        }
+
+        /* التنقل بين الصفحات – أزرار كبيرة */
+        .pagination {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            flex-wrap: wrap;
+            padding: 18px 12px;
+            background: #fefaf2;
+            border-top: 1px solid #e8decb;
+        }
+
+        .page-btn {
+            background: #f2e7da;
+            border: none;
+            padding: 10px 18px;
+            border-radius: 44px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: 0.15s;
+            min-width: 48px;
+        }
+
+        .page-btn.active {
+            background: #c49a6c;
+            color: white;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .page-btn:active { transform: scale(0.96); background: #b88b5a;}
+
+        .no-results {
+            text-align: center;
+            padding: 2.5rem;
+            font-size: 1rem;
+            color: #a98153;
+        }
+
+        /* تحسينات للأجهزة اللوحية والجوال */
+        @media (max-width: 680px) {
+            body { padding: 6px; }
+            .header h1 { font-size: 1.4rem; }
+            .controls { flex-direction: column; align-items: stretch; }
+            .stats { text-align: center; white-space: normal; }
+            .search-box input, .filter-select, .clear-btn { padding: 12px 16px; }
+            .data-table th, .data-table td { padding: 10px 6px; }
+            .keyword-cell { font-size: 0.9rem; }
+            .ayah-snippet { max-width: 220px; font-size: 0.75rem; }
+            .page-btn { padding: 8px 14px; font-size: 0.8rem; }
+        }
+
+        /* تأثير اللمس */
+        button, .page-btn, .clear-btn, .filter-select {
+            touch-action: manipulation;
+        }
+
+        footer {
+            text-align: center;
+            padding: 12px;
+            font-size: 0.7rem;
+            background: #faf5ea;
+            color: #ac9a7c;
+            border-top: 1px solid #e8dccb;
+        }
+
+        .copy-tip {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #1e3327;
+            color: #f9e7c2;
+            padding: 6px 18px;
+            border-radius: 60px;
+            font-size: 0.75rem;
+            z-index: 999;
+            pointer-events: none;
+            opacity: 0;
+            transition: 0.2s;
+        }
+    </style>
+</head>
+<body>
+<div class="app-container">
+    <div class="header">
+        <h1>
+            <span>📖 فَرْشُ الحُرُوف</span>
+            <span>مستكشف الرسم القرآني</span>
+        </h1>
+        <div class="sub">كلمات القرآن – أحكام الحذف والإثبات – شواهد من الآيات</div>
+    </div>
+
+    <div class="controls">
+        <div class="search-box">
+            <input type="text" id="searchInput" placeholder="🔎 ابحث بكلمة (مثال: العالمين، رسالاته، محذوفة)" autocomplete="off">
+            <select id="statusFilter" class="filter-select">
+                <option value="all">📌 جميع الحالات</option>
+                <option value="محذوفة">✂️ محذوفة</option>
+                <option value="ثابتة">✅ ثابتة</option>
+                <option value="محذوفان">⚠️ محذوفان</option>
+                <option value="ثابتان">🔷 ثابتان</option>
+                <option value="الأول ثابت">🔹 الأول ثابت</option>
+                <option value="الأول محذوف">🔸 الأول محذوف</option>
+                <option value="ياء">🟡 ياء زائدة/محذوفة</option>
+                <option value="ألف">🟢 ألف</option>
+                <option value="واو">🟣 واو</option>
+            </select>
+            <button id="clearSearchBtn" class="clear-btn" aria-label="مسح">🗑️ مسح</button>
+        </div>
+        <div class="stats" id="statsArea">📊 جاري التحميل...</div>
+    </div>
+
+    <div class="table-wrapper">
+        <table class="data-table" id="dataTable">
+            <thead>
+                <tr><th>#</th><th>الكلمة الأساسية</th><th>حالة الحرف</th><th>نص الآية (مقطع)</th><th>ملاحظات / سور</th></tr>
+            </thead>
+            <tbody id="tableBody"><tr><td colspan="5" style="text-align:center;">⏳ تحميل قاعدة بيانات فروش الرسم...</td></tr></tbody>
+        </table>
+    </div>
+
+    <div class="pagination" id="paginationControls"></div>
+    <footer>🗂️ بيانات angko.json – فروش عثماني. اضغط على أي كلمة لنسخها 🔁 | مصمم للهواتف والتفاعل السريع</footer>
+    <div id="copyToast" class="copy-tip">📋 تم النسخ</div>
+</div>
+
+<script>
+    (function(){
+        // ---------- البيانات والحالات ----------
+        let fullData = [];
+        let filteredData = [];
+        let currentPage = 1;
+        const rowsPerPage = 18;    // عدد مناسب للجوال
+
+        // العناصر
+        const tbody = document.getElementById('tableBody');
+        const searchInput = document.getElementById('searchInput');
+        const statusFilter = document.getElementById('statusFilter');
+        const statsArea = document.getElementById('statsArea');
+        const paginationDiv = document.getElementById('paginationControls');
+        const clearBtn = document.getElementById('clearSearchBtn');
+        const toast = document.getElementById('copyToast');
+
+        // دالة التطبيع (بحث ذكي)
+        function normalizeText(str) {
+            if (!str) return '';
+            return str.normalize("NFD").replace(/[\u064B-\u065F]/g, '')
+                .replace(/[أإآ]/g, 'ا')
+                .replace(/[ى]/g, 'ي')
+                .replace(/[ة]/g, 'ه')
+                .toLowerCase();
+        }
+
+        // تنسيق الحالة مع badge
+        function formatStatus(state) {
+            if (!state) state = '';
+            let extraClass = '';
+            if (state.includes('محذوفة') || state === 'محذوفة') extraClass = 'status-mahdhoof';
+            else if (state.includes('ثابتة') || state === 'ثابتة') extraClass = 'status-thabit';
+            return `<span class="status-badge ${extraClass}">${escapeHtml(state)}</span>`;
+        }
+
+        // فلترة البيانات حسب البحث والحالة
+        function buildFilteredData() {
+            const searchTerm = searchInput.value.trim();
+            const statusVal = statusFilter.value;
+            const normalizedSearch = searchTerm ? normalizeText(searchTerm) : '';
+
+            filteredData = fullData.filter(item => {
+                const keyword = item[0] || '';
+                const state = item[1] || '';
+                const ayahPart = item[3] || '';
+                const extraNote = item[2] || '';
+
+                let matchSearch = true;
+                if (normalizedSearch) {
+                    const normKeyword = normalizeText(keyword);
+                    const normAyah = normalizeText(ayahPart);
+                    const normExtra = normalizeText(extraNote);
+                    matchSearch = normKeyword.includes(normalizedSearch) || normAyah.includes(normalizedSearch) || normExtra.includes(normalizedSearch);
+                }
+
+                let matchStatus = true;
+                if (statusVal !== 'all') {
+                    // دقة المطابقة حسب الفئات التي قد تكون معقدة
+                    if (statusVal === 'محذوفة' && state !== 'محذوفة') matchStatus = false;
+                    else if (statusVal === 'ثابتة' && state !== 'ثابتة') matchStatus = false;
+                    else if (statusVal === 'محذوفان' && state !== 'محذوفان') matchStatus = false;
+                    else if (statusVal === 'ثابتان' && state !== 'ثابتان') matchStatus = false;
+                    else if (statusVal === 'الأول ثابت' && state !== 'الأول ثابت') matchStatus = false;
+                    else if (statusVal === 'الأول محذوف' && state !== 'الأول محذوف') matchStatus = false;
+                    else if (statusVal === 'ياء' && !(state === 'ياء' || state.includes('ياء') || state === 'ياء زائدة')) matchStatus = false;
+                    else if (statusVal === 'ألف' && !(state === 'ألف' || state.includes('ألف'))) matchStatus = false;
+                    else if (statusVal === 'واو' && !(state === 'واو' || state.includes('واو'))) matchStatus = false;
+                    else if (statusVal !== state && !(statusVal === 'ياء' && (state.includes('ياء') || state === 'ياء')) && !(statusVal === 'ألف' && state.includes('ألف')) && !(statusVal === 'واو' && state.includes('واو'))) {
+                        matchStatus = false;
+                    }
+                }
+                return matchSearch && matchStatus;
+            });
+
+            currentPage = 1;
+            renderTable();
+            renderPagination();
+            updateStats();
+        }
+
+        // عرض الجدول
+        function renderTable() {
+            const start = (currentPage - 1) * rowsPerPage;
+            const pageItems = filteredData.slice(start, start + rowsPerPage);
+            if (!pageItems.length) {
+                tbody.innerHTML = `<tr><td colspan="5" class="no-results">🌟 لا توجد نتائج مطابقة. غيّر البحث أو الفلتر.</td></tr>`;
+                return;
+            }
+
+            let html = '';
+            pageItems.forEach((item, idx) => {
+                const serial = start + idx + 1;
+                const keyword = item[0] || '—';
+                const status = item[1] || '—';
+                const suraExtra = (item[2] && item[2] !== '...') ? item[2] : '—';
+                let ayahRaw = item[3] || '';
+                if (ayahRaw === '...' || ayahRaw === '—') ayahRaw = '📖 نص آية غير مذكور';
+                let trimmedAyah = ayahRaw.length > 85 ? ayahRaw.substring(0, 82) + '…' : ayahRaw;
+                
+                html += `
+                    <tr data-keyword="${escapeHtml(keyword)}">
+                        <td style="color:#8f7355; width:45px;">${serial}</td>
+                        <td class="keyword-cell" style="cursor:pointer;" data-copy="${escapeHtml(keyword)}">${escapeHtml(keyword)}</td>
+                        <td>${formatStatus(status)}</td>
+                        <td><div class="ayah-snippet">📜 ${escapeHtml(trimmedAyah)}</div></td>
+                        <td class="extra-info">${escapeHtml(suraExtra)}</td>
+                    </tr>
+                `;
+            });
+            tbody.innerHTML = html;
+
+            // إضافة خاصية النسخ عند النقر على الكلمة (تفاعلية)
+            document.querySelectorAll('.keyword-cell').forEach(cell => {
+                cell.addEventListener('click', (e) => {
+                    const word = cell.getAttribute('data-copy') || cell.innerText.trim();
+                    if (word && word !== '—') {
+                        navigator.clipboard.writeText(word).then(() => {
+                            showToast(`📎 تم نسخ "${word}"`);
+                        }).catch(() => showToast("❌ فشل النسخ"));
+                    } else {
+                        showToast("⚠️ لا توجد كلمة للنسخ");
+                    }
+                    e.stopPropagation();
+                });
+            });
+        }
+
+        function showToast(msg) {
+            toast.textContent = msg;
+            toast.style.opacity = '1';
+            toast.style.transform = 'translateX(-50%) translateY(0)';
+            setTimeout(() => {
+                toast.style.opacity = '0';
+            }, 1500);
+        }
+
+        // إحصائيات ديناميكية
+        function updateStats() {
+            const total = fullData.length;
+            const filteredCount = filteredData.length;
+            const uniqueStat = {};
+            filteredData.slice(0, 150).forEach(item => {
+                let st = item[1] || 'غير محدد';
+                uniqueStat[st] = (uniqueStat[st] || 0) + 1;
+            });
+            const topEntries = Object.entries(uniqueStat).sort((a,b)=>b[1]-a[1]).slice(0,2);
+            const topText = topEntries.map(([k,v]) => `${k} (${v})`).join(' , ');
+            statsArea.innerHTML = `📊 إجمالي: ${total} | معروض: ${filteredCount} | 🏷️ ${topText || 'جميع الحالات'}`;
+        }
+
+        // التصفح بين الصفحات (مُحسَّن للمس)
+        function renderPagination() {
+            const totalPages = Math.ceil(filteredData.length / rowsPerPage);
+            if (totalPages <= 1) {
+                paginationDiv.innerHTML = '';
+                return;
+            }
+            let btns = '';
+            btns += `<button class="page-btn" data-page="prev" ${currentPage === 1 ? 'disabled style="opacity:0.4"' : ''}>‹ السابق</button>`;
+            
+            let startPage = Math.max(1, currentPage - 2);
+            let endPage = Math.min(totalPages, currentPage + 2);
+            if (endPage - startPage < 3) {
+                if (startPage === 1) endPage = Math.min(totalPages, startPage + 4);
+                else startPage = Math.max(1, endPage - 4);
+            }
+            for (let i = startPage; i <= endPage; i++) {
+                btns += `<button class="page-btn ${i === currentPage ? 'active' : ''}" data-page="${i}">${i}</button>`;
+            }
+            btns += `<button class="page-btn" data-page="next" ${currentPage === totalPages ? 'disabled style="opacity:0.4"' : ''}>التالي ›</button>`;
+            paginationDiv.innerHTML = btns;
+
+            document.querySelectorAll('.page-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const val = btn.getAttribute('data-page');
+                    if (val === 'prev' && currentPage > 1) currentPage--;
+                    else if (val === 'next' && currentPage < totalPages) currentPage++;
+                    else if (!isNaN(parseInt(val))) currentPage = parseInt(val);
+                    else return;
+                    renderTable();
+                    renderPagination();
+                    window.scrollTo({ top: 240, behavior: 'smooth' });
+                });
+            });
+        }
+
+        // مسح البحث وإعادة تعيين الفلتر (مع بقاء الفلتر حسب الاختيار)
+        function resetSearch() {
+            searchInput.value = '';
+            buildFilteredData();
+            showToast("🔍 تم مسح البحث");
+        }
+
+        // تحميل ملف JSON (المسار الصحيح: نفس المجلد)
+        async function loadData() {
+            try {
+                // تغيير المسار إلى الملف المرفق مباشرة "angko.json"
+                const response = await fetch('json/angko.json');
+                if (!response.ok) throw new Error(`HTTP ${response.status} - تأكد من وجود angko.json`);
+                const jsonArray = await response.json();
+                if (!Array.isArray(jsonArray)) throw new Error('الملف ليس مصفوفة صحيحة');
+                fullData = jsonArray.filter(row => Array.isArray(row) && row.length >= 4);
+                fullData = fullData.map(row => {
+                    while(row.length < 5) row.push('');
+                    return row;
+                });
+                filteredData = [...fullData];
+                renderTable();
+                renderPagination();
+                updateStats();
+            } catch (err) {
+                console.error(err);
+           
