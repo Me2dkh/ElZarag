@@ -76,7 +76,7 @@ body::before {
 }
 
 .lewa7.shake {
-	animation: 0.5s shake linear infinite;
+    animation: 0.5s shake linear infinite;
 }
 
 @keyframes shake {
@@ -324,7 +324,7 @@ body::before {
     color: #fff;
     text-align: center;
     background-color: var(--gold-transparent);
-    border-right: 2px solid var(--gold-dark);
+    border-bottom: 2px solid var(--gold-dark);
     border-radius: 12px;
     padding: 0px 8px;
     margin-bottom: 10px;
@@ -590,8 +590,8 @@ body::before {
     align-items: center;
     overflow: hidden;
     background-color: var(--white);
-    border: 2px solid var(--gold-dark);
-    border-radius: 30px;
+    box-shadow: 0 0 12px rgba(0 0 0 / 0.1);
+    border-radius: 8px;
 }
 
 .marquee-bar button {
@@ -637,8 +637,8 @@ body::before {
 
 .menu {
     position: absolute;
-    top: calc(5% + 44px);
-    right: 5%;
+    top: calc(5% + 46px);
+    left: 5%;
     background-color: var(--gold-dark);
     width: 200px;
     border-radius: 8px;
